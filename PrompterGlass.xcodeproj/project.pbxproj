@@ -1,0 +1,579 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 100;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		CC090BE730291E5B00382268 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC090BCF30291E5A00382268 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC090BD630291E5A00382268;
+			remoteInfo = PrompterGlass;
+		};
+		CC090BF130291E5B00382268 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC090BCF30291E5A00382268 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC090BD630291E5A00382268;
+			remoteInfo = PrompterGlass;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CC090BD730291E5A00382268 /* PrompterGlass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrompterGlass.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC090BE630291E5B00382268 /* PrompterGlassTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrompterGlassTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC090BF030291E5B00382268 /* PrompterGlassUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrompterGlassUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC7EC7EB30291FF200F44967 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		CC090BD930291E5A00382268 /* PrompterGlass */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PrompterGlass;
+			sourceTree = "<group>";
+		};
+		CC090BE930291E5B00382268 /* PrompterGlassTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PrompterGlassTests;
+			sourceTree = "<group>";
+		};
+		CC090BF330291E5B00382268 /* PrompterGlassUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PrompterGlassUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CC090BD430291E5A00382268 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		CC090BE330291E5B00382268 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		CC090BED30291E5B00382268 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CC090BCE30291E5A00382268 = {
+			isa = PBXGroup;
+			children = (
+				CC7EC7EB30291FF200F44967 /* README.md */,
+				CC090BD930291E5A00382268 /* PrompterGlass */,
+				CC090BE930291E5B00382268 /* PrompterGlassTests */,
+				CC090BF330291E5B00382268 /* PrompterGlassUITests */,
+				CC090BD830291E5A00382268 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CC090BD830291E5A00382268 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CC090BD730291E5A00382268 /* PrompterGlass.app */,
+				CC090BE630291E5B00382268 /* PrompterGlassTests.xctest */,
+				CC090BF030291E5B00382268 /* PrompterGlassUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CC090BD630291E5A00382268 /* PrompterGlass */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC090BFA30291E5B00382268 /* Build configuration list for PBXNativeTarget "PrompterGlass" */;
+			buildPhases = (
+				CC090C1030291E5B00382268 /* SwiftLint */,
+				CC090BD330291E5A00382268 /* Sources */,
+				CC090BD430291E5A00382268 /* Frameworks */,
+				CC090BD530291E5A00382268 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				CC090BD930291E5A00382268 /* PrompterGlass */,
+			);
+			name = PrompterGlass;
+			productName = PrompterGlass;
+			productReference = CC090BD730291E5A00382268 /* PrompterGlass.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CC090BE530291E5B00382268 /* PrompterGlassTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC090BFD30291E5B00382268 /* Build configuration list for PBXNativeTarget "PrompterGlassTests" */;
+			buildPhases = (
+				CC090BE230291E5B00382268 /* Sources */,
+				CC090BE330291E5B00382268 /* Frameworks */,
+				CC090BE430291E5B00382268 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CC090BE830291E5B00382268 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CC090BE930291E5B00382268 /* PrompterGlassTests */,
+			);
+			name = PrompterGlassTests;
+			productName = PrompterGlassTests;
+			productReference = CC090BE630291E5B00382268 /* PrompterGlassTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CC090BEF30291E5B00382268 /* PrompterGlassUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC090C0030291E5B00382268 /* Build configuration list for PBXNativeTarget "PrompterGlassUITests" */;
+			buildPhases = (
+				CC090BEC30291E5B00382268 /* Sources */,
+				CC090BED30291E5B00382268 /* Frameworks */,
+				CC090BEE30291E5B00382268 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CC090BF230291E5B00382268 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CC090BF330291E5B00382268 /* PrompterGlassUITests */,
+			);
+			name = PrompterGlassUITests;
+			productName = PrompterGlassUITests;
+			productReference = CC090BF030291E5B00382268 /* PrompterGlassUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CC090BCF30291E5A00382268 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2660;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = {
+					CC090BD630291E5A00382268 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					CC090BE530291E5B00382268 = {
+						CreatedOnToolsVersion = 26.6;
+						TestTargetID = CC090BD630291E5A00382268;
+					};
+					CC090BEF30291E5B00382268 = {
+						CreatedOnToolsVersion = 26.6;
+						TestTargetID = CC090BD630291E5A00382268;
+					};
+				};
+			};
+			buildConfigurationList = CC090BD230291E5A00382268 /* Build configuration list for PBXProject "PrompterGlass" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CC090BCE30291E5A00382268;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 100;
+			productRefGroup = CC090BD830291E5A00382268 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CC090BD630291E5A00382268 /* PrompterGlass */,
+				CC090BE530291E5B00382268 /* PrompterGlassTests */,
+				CC090BEF30291E5B00382268 /* PrompterGlassUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CC090BD530291E5A00382268 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		CC090BE430291E5B00382268 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		CC090BEE30291E5B00382268 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CC090C1030291E5B00382268 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			name = SwiftLint;
+			shellPath = /bin/sh;
+			shellScript = (
+				"export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin\"",
+				"",
+				"if ! command -v swiftlint >/dev/null 2>&1; then",
+				"  echo \"warning: SwiftLint not installed. Install it with: brew install swiftlint\"",
+				"  exit 0",
+				"fi",
+				"",
+				"swiftlint lint --quiet --config \"$SRCROOT/.swiftlint.yml\"",
+				"",
+			);
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CC090BD330291E5A00382268 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		CC090BE230291E5B00382268 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		CC090BEC30291E5B00382268 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CC090BE830291E5B00382268 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC090BD630291E5A00382268 /* PrompterGlass */;
+			targetProxy = CC090BE730291E5B00382268 /* PBXContainerItemProxy */;
+		};
+		CC090BF230291E5B00382268 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC090BD630291E5A00382268 /* PrompterGlass */;
+			targetProxy = CC090BF130291E5B00382268 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		CC090BF830291E5B00382268 /* Debug configuration for PBXProject "PrompterGlass" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4G9UQ8D789;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CC090BF930291E5B00382268 /* Release configuration for PBXProject "PrompterGlass" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4G9UQ8D789;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		CC090BFB30291E5B00382268 /* Debug configuration for PBXNativeTarget "PrompterGlass" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4G9UQ8D789;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.victorcastro.PrompterGlass;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CC090BFC30291E5B00382268 /* Release configuration for PBXNativeTarget "PrompterGlass" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4G9UQ8D789;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.victorcastro.PrompterGlass;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		CC090BFE30291E5B00382268 /* Debug configuration for PBXNativeTarget "PrompterGlassTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4G9UQ8D789;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.victorcastro.PrompterGlassTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrompterGlass.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PrompterGlass";
+			};
+			name = Debug;
+		};
+		CC090BFF30291E5B00382268 /* Release configuration for PBXNativeTarget "PrompterGlassTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4G9UQ8D789;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.victorcastro.PrompterGlassTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PrompterGlass.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PrompterGlass";
+			};
+			name = Release;
+		};
+		CC090C0130291E5B00382268 /* Debug configuration for PBXNativeTarget "PrompterGlassUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4G9UQ8D789;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.victorcastro.PrompterGlassUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = PrompterGlass;
+			};
+			name = Debug;
+		};
+		CC090C0230291E5B00382268 /* Release configuration for PBXNativeTarget "PrompterGlassUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4G9UQ8D789;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.victorcastro.PrompterGlassUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = PrompterGlass;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CC090BD230291E5A00382268 /* Build configuration list for PBXProject "PrompterGlass" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC090BF830291E5B00382268 /* Debug configuration for PBXProject "PrompterGlass" */,
+				CC090BF930291E5B00382268 /* Release configuration for PBXProject "PrompterGlass" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		CC090BFA30291E5B00382268 /* Build configuration list for PBXNativeTarget "PrompterGlass" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC090BFB30291E5B00382268 /* Debug configuration for PBXNativeTarget "PrompterGlass" */,
+				CC090BFC30291E5B00382268 /* Release configuration for PBXNativeTarget "PrompterGlass" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		CC090BFD30291E5B00382268 /* Build configuration list for PBXNativeTarget "PrompterGlassTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC090BFE30291E5B00382268 /* Debug configuration for PBXNativeTarget "PrompterGlassTests" */,
+				CC090BFF30291E5B00382268 /* Release configuration for PBXNativeTarget "PrompterGlassTests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		CC090C0030291E5B00382268 /* Build configuration list for PBXNativeTarget "PrompterGlassUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC090C0130291E5B00382268 /* Debug configuration for PBXNativeTarget "PrompterGlassUITests" */,
+				CC090C0230291E5B00382268 /* Release configuration for PBXNativeTarget "PrompterGlassUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CC090BCF30291E5A00382268 /* Project object */;
+}

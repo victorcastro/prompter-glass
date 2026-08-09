@@ -1,0 +1,67 @@
+name: PR
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: pr-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: SwiftLint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: SwiftLint
+        run: |
+          docker run --rm \
+            -v "$PWD:/work" -w /work \
+            --entrypoint swiftlint \
+            ghcr.io/realm/swiftlint:latest \
+            lint --strict --reporter github-actions-logging
+
+  format:
+    name: SwiftFormat
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: SwiftFormat (check only)
+        run: |
+          docker run --rm \
+            -v "$PWD:/work" -w /work \
+            --entrypoint swiftformat \
+            ghcr.io/nicklockwood/swiftformat:latest \
+            --lint --reporter github-actions-log .
+
+  sanity:
+    name: Repo sanity
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Shared scheme exists
+        run: |
+          test -d PrompterGlass.xcodeproj/xcshareddata/xcschemes \
+            || { echo "::error::No shared schemes found; a macOS CI job would not be able to build the project"; exit 1; }
+
+      - name: Xcode project parses
+        run: |
+          grep -q "objectVersion" PrompterGlass.xcodeproj/project.pbxproj \
+            || { echo "::error::project.pbxproj is corrupted"; exit 1; }
+
+      - name: No merge conflict markers
+        run: |
+          if grep -rIn --exclude-dir=.git -E '^(<<<<<<<|>>>>>>>) ' .; then
+            echo "::error::Unresolved merge conflict markers"
+            exit 1
+          fi

@@ -1,0 +1,29 @@
+--swiftversion 5.0
+
+--exclude .build,DerivedData,PrompterGlass.xcodeproj
+
+--indent 4
+--maxwidth 120
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--closingparen balanced
+--trimwhitespace always
+--commas inline
+--semicolons never
+--voidtype void
+
+--self remove
+--importgrouping testable-bottom
+--stripunusedargs closure-only
+--header strip
+--funcattributes prev-line
+--typeattributes prev-line
+
+--enable isEmpty
+--enable blankLinesBetweenImports
+--enable redundantVariable
+--enable sortImports
+--enable wrapMultilineStatementBraces
+
+--disable wrapEnumCases
