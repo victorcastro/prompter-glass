@@ -41,7 +41,9 @@ struct ScriptLibraryView: View {
             titleVisibility: .visible
         ) {
             Button("Delete", role: .destructive) {
-                if let script = scriptPendingDeletion { onDelete(script) }
+                if let script = scriptPendingDeletion {
+                    onDelete(script)
+                }
                 scriptPendingDeletion = nil
             }
             .accessibilityIdentifier(Identifier.confirmDelete)
@@ -103,7 +105,11 @@ struct ScriptLibraryView: View {
     private var deletionBinding: Binding<Bool> {
         Binding(
             get: { scriptPendingDeletion != nil },
-            set: { if !$0 { scriptPendingDeletion = nil } }
+            set: { isPresented in
+                if !isPresented {
+                    scriptPendingDeletion = nil
+                }
+            }
         )
     }
 }

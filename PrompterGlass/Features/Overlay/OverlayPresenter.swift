@@ -73,7 +73,9 @@ final class OverlayPresenter {
     }
 
     private var resolvedController: OverlayWindowController {
-        if let controller { return controller }
+        if let controller {
+            return controller
+        }
         let created = OverlayWindowController(
             preferences: preferences,
             presenter: self,

@@ -74,9 +74,13 @@ struct MainWindowView: View {
 
     private func delete(_ script: Script) {
         let wasActive = environment.activeScript.script?.id == script.id
-        if selectedScriptID == script.id { selectedScriptID = nil }
+        if selectedScriptID == script.id {
+            selectedScriptID = nil
+        }
         modelContext.delete(script)
-        if wasActive { environment.clearActiveScript() }
+        if wasActive {
+            environment.clearActiveScript()
+        }
     }
 }
 

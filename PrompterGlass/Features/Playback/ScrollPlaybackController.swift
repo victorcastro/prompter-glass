@@ -80,7 +80,9 @@ final class ScrollPlaybackController {
     }
 
     private var resolvedDriver: DisplayLinkDriver {
-        if let driver { return driver }
+        if let driver {
+            return driver
+        }
         let created = DisplayLinkDriver(
             source: { [weak self] in self?.displaySourceView },
             onTick: { [weak self] delta in self?.tick(delta) }
