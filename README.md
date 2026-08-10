@@ -7,13 +7,9 @@ A native macOS teleprompter with a transparent floating window that stays on top
 
 ## Screenshots
 
-The main window, where you write your scripts and control playback and appearance:
+The Prompter tab, where you pick a script, tune speed, text size and backdrop, and start rolling:
 
-![Main window with the script editor, playback controls and appearance settings](docs/images/main-window.png)
-
-The floating overlay reading a script over the desktop — transparent, always on top, and readable over anything:
-
-![Transparent overlay showing a script in large green text over the desktop](docs/images/overlay.png)
+![Prompter tab with the glass panel preview, voice tracking and click-through toggles, and speed, text size and backdrop controls](docs/images/tab-prompter.png)
 
 ## Project status
 
