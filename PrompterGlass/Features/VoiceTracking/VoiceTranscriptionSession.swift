@@ -21,25 +21,14 @@ final class VoiceTranscriptionSession {
     static func resolveSupportedLocale() async -> Locale? {
         let supported = await SpeechTranscriber.supportedLocales
         let current = Locale.current
-        NSLog(
-            "PrompterGlass: current locale %@, supported: %@",
-            current.identifier(.bcp47),
-            supported.map { $0.identifier(.bcp47) }.joined(separator: ", ")
-        )
         if let exact = supported.first(where: { $0.identifier(.bcp47) == current.identifier(.bcp47) }) {
-            NSLog("PrompterGlass: using exact locale match %@", exact.identifier(.bcp47))
             return exact
         }
         let sameLanguage = supported.filter { $0.language.languageCode == current.language.languageCode }
         let preferred = Locale.preferredLanguages.map { Locale(identifier: $0).identifier(.bcp47) }
-        let fallback = sameLanguage.first { preferred.contains($0.identifier(.bcp47)) }
+        return sameLanguage.first { preferred.contains($0.identifier(.bcp47)) }
             ?? sameLanguage.first { $0.region?.identifier == "US" }
             ?? sameLanguage.first
-        NSLog(
-            "PrompterGlass: language fallback -> %@",
-            fallback.map { $0.identifier(.bcp47) } ?? "none"
-        )
-        return fallback
     }
 
     func start(deviceUID: String?, onUpdate: @escaping @MainActor (Update) -> Void) async throws {
@@ -55,11 +44,7 @@ final class VoiceTranscriptionSession {
             attributeOptions: []
         )
         if let request = try await AssetInventory.assetInstallationRequest(supporting: [transcriber]) {
-            NSLog("PrompterGlass: downloading on-device speech model…")
             try await request.downloadAndInstall()
-            NSLog("PrompterGlass: speech model installed")
-        } else {
-            NSLog("PrompterGlass: speech model already installed")
         }
 
         let analyzer = SpeechAnalyzer(modules: [transcriber])
@@ -67,10 +52,8 @@ final class VoiceTranscriptionSession {
         guard let analyzerFormat = await SpeechAnalyzer.bestAvailableAudioFormat(
             compatibleWith: [transcriber]
         ) else {
-            NSLog("PrompterGlass: no compatible analyzer audio format")
             throw SessionError.audioFormatUnavailable
         }
-        NSLog("PrompterGlass: analyzer format %@", analyzerFormat.description)
 
         let (inputSequence, builder) = AsyncStream<AnalyzerInput>.makeStream()
         inputBuilder = builder
@@ -78,20 +61,15 @@ final class VoiceTranscriptionSession {
         resultsTask = Task {
             do {
                 for try await result in transcriber.results {
-                    let text = String(result.text.characters)
-                    NSLog("PrompterGlass: transcript (%@) \"%@\"", result.isFinal ? "final" : "volatile", text)
-                    onUpdate(Update(text: text, isFinal: result.isFinal))
+                    onUpdate(Update(text: String(result.text.characters), isFinal: result.isFinal))
                 }
-            } catch {
-                NSLog("PrompterGlass: transcription stream ended (%@)", String(describing: error))
-            }
+            } catch {}
         }
 
         try installTap(feeding: builder, format: analyzerFormat)
         try await analyzer.start(inputSequence: inputSequence)
         audioEngine.prepare()
         try audioEngine.start()
-        NSLog("PrompterGlass: audio engine running, listening")
     }
 
     func stop() {
@@ -109,20 +87,13 @@ final class VoiceTranscriptionSession {
     }
 
     private func applyInputDevice(uid: String?) {
-        guard let uid else {
-            NSLog("PrompterGlass: using system default microphone")
-            return
-        }
-        guard let deviceID = AudioInputDevices.coreAudioDeviceID(forUID: uid) else {
-            NSLog("PrompterGlass: microphone %@ not found, using system default", uid)
-            return
-        }
-        guard let audioUnit = audioEngine.inputNode.audioUnit else {
-            NSLog("PrompterGlass: input node has no audio unit, using system default")
-            return
-        }
+        guard
+            let uid,
+            let deviceID = AudioInputDevices.coreAudioDeviceID(forUID: uid),
+            let audioUnit = audioEngine.inputNode.audioUnit
+        else { return }
         var device = deviceID
-        let status = AudioUnitSetProperty(
+        AudioUnitSetProperty(
             audioUnit,
             kAudioOutputUnitProperty_CurrentDevice,
             kAudioUnitScope_Global,
@@ -130,7 +101,6 @@ final class VoiceTranscriptionSession {
             &device,
             UInt32(MemoryLayout<AudioDeviceID>.size)
         )
-        NSLog("PrompterGlass: selected microphone %@ (status %d)", uid, status)
     }
 
     private func installTap(

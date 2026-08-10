@@ -140,7 +140,6 @@ final class VoiceTrackingController {
         }
 
         state = .preparing
-        NSLog("PrompterGlass: voice tracking preparing (mic permission ok)")
         let session = makeSession()
         do {
             try await session.start(deviceUID: microphoneUID) { [weak self] update in
@@ -149,9 +148,7 @@ final class VoiceTrackingController {
             self.session = session
             playback.startVoiceFollowing()
             state = .listening
-            NSLog("PrompterGlass: voice tracking listening")
         } catch {
-            NSLog("PrompterGlass: voice tracking failed to start (%@)", String(describing: error))
             session.stop()
             state = .unavailable
         }
@@ -178,12 +175,6 @@ final class VoiceTrackingController {
         guard !fresh.isEmpty else { return }
 
         aligner.ingest(fresh)
-        NSLog(
-            "PrompterGlass: aligner +%d words -> %d/%d confirmed",
-            fresh.count,
-            aligner.confirmedCount,
-            aligner.totalCount
-        )
         if let end = aligner.confirmedEndIndex {
             highlightedUTF16Length = scriptText.utf16.distance(from: scriptText.startIndex, to: end)
         } else {
