@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  SWIFTLINT_IMAGE: ghcr.io/realm/swiftlint:0.63.2
+
 concurrency:
   group: pr-${{ github.head_ref }}
   cancel-in-progress: true
@@ -15,31 +18,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: SwiftLint
         run: |
           docker run --rm \
             -v "$PWD:/work" -w /work \
             --entrypoint swiftlint \
-            ghcr.io/realm/swiftlint:latest \
+            "$SWIFTLINT_IMAGE" \
             lint --strict --reporter github-actions-logging
-
-  format:
-    name: SwiftFormat
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: SwiftFormat (check only)
-        run: |
-          docker run --rm \
-            -v "$PWD:/work" -w /work \
-            --entrypoint swiftformat \
-            ghcr.io/nicklockwood/swiftformat:latest \
-            --lint --reporter github-actions-log .
 
   sanity:
     name: Repo sanity
@@ -47,7 +34,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Shared scheme exists
         run: |

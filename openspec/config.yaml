@@ -1,0 +1,66 @@
+schema: spec-driven
+
+context: |
+  # PrompterGlass
+
+  Native macOS teleprompter app. Open source, MIT licensed.
+  Repository: https://github.com/VictorCastroDev/PrompterGlass
+
+  ## Purpose
+
+  The defining feature is a borderless, transparent, always-on-top overlay window
+  that floats above other apps, so the user can read a script while looking near
+  the webcam during recordings or video calls.
+
+  ## Platform
+
+  - macOS ONLY. No iOS, no iPadOS, no Catalyst, no cross-platform abstraction layers.
+  - Deployment target: macOS 26.5 or later.
+  - Bundle identifier: dev.victorcastro.PrompterGlass
+  - Distribution today: build from source in Xcode. No release, installer or signed binary yet.
+
+  ## Tech stack
+
+  - Language: Swift 5 (swiftformat --swiftversion 5.0).
+  - UI: SwiftUI for all content views.
+  - AppKit interop is expected and intentional for window-level behavior
+    (NSPanel, NSHostingView/NSHostingController, NSWindow collection behavior,
+    NSScreen). Reach for AppKit only where SwiftUI cannot express the behavior.
+  - Persistence: SwiftData (@Model, ModelContainer, ModelContext).
+  - Lightweight preferences (window frame, UI settings): UserDefaults / @AppStorage.
+  - Tests: Swift Testing (@Test / #expect) for unit tests in PrompterGlassTests.
+    XCTest UI tests in PrompterGlassUITests.
+
+  ## Project layout
+
+  - PrompterGlass/            app sources (SwiftUI app entry point, views, models)
+  - PrompterGlassTests/       Swift Testing unit tests
+  - PrompterGlassUITests/     XCTest UI tests
+  - PrompterGlass.xcodeproj   Xcode project (single app target)
+
+  The Xcode project was just created and still holds Xcode template scaffolding
+  (ContentView.swift, Item.swift, PrompterGlassApp.swift). Treat it as empty.
+
+  ## Conventions
+
+  - SwiftLint (.swiftlint.yml) and SwiftFormat (.swiftformat) are the source of truth
+    for style. Key limits: 120 col warning / 160 error, 4-space indent, no semicolons,
+    implicit self, sorted imports, no file headers, function body 60 lines warning.
+  - Type nesting max 2 levels; file length 500 warning / 800 error.
+  - Prefer value types and small, testable types. Keep window/AppKit glue isolated
+    from SwiftUI views so the views stay unit-testable.
+  - Conventional commit messages (feat/fix/docs/refactor/test/chore).
+
+  ## Non-goals (out of scope for now)
+
+  Export, cloud sync, iOS/iPadOS support, remote control, camera capture, recording.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
