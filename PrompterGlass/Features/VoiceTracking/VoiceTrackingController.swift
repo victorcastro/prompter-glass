@@ -3,7 +3,10 @@ import Observation
 
 @MainActor
 protocol VoiceTranscribing: AnyObject {
-    func start(onUpdate: @escaping @MainActor (VoiceTranscriptionSession.Update) -> Void) async throws
+    func start(
+        deviceUID: String?,
+        onUpdate: @escaping @MainActor (VoiceTranscriptionSession.Update) -> Void
+    ) async throws
     func stop()
 }
 
@@ -33,6 +36,8 @@ final class VoiceTrackingController {
 
     private(set) var state: State = .idle
     private(set) var highlightedUTF16Length = 0
+
+    private(set) var microphoneUID: String?
 
     @ObservationIgnored
     private var scriptText = ""
@@ -88,6 +93,15 @@ final class VoiceTrackingController {
         }
     }
 
+    func setMicrophone(uid: String?) {
+        guard uid != microphoneUID else { return }
+        microphoneUID = uid
+        if isActive {
+            stopListening()
+            setEnabled(true)
+        }
+    }
+
     func stopAndReset() {
         setEnabled(false)
         aligner.reset()
@@ -129,7 +143,7 @@ final class VoiceTrackingController {
         NSLog("PrompterGlass: voice tracking preparing (mic permission ok)")
         let session = makeSession()
         do {
-            try await session.start { [weak self] update in
+            try await session.start(deviceUID: microphoneUID) { [weak self] update in
                 self?.handle(update)
             }
             self.session = session

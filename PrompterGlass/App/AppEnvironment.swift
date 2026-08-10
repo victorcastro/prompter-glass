@@ -45,6 +45,7 @@ final class AppEnvironment {
                 )
             }
         )
+        voiceTracking.setMicrophone(uid: preferences.microphoneUID)
         terminationObserver = notificationCenter.addObserver(
             forName: NSApplication.willTerminateNotification,
             object: nil,
@@ -85,6 +86,11 @@ final class AppEnvironment {
     func refreshPlaybackAvailability() {
         playback.hasContent = activeScript.hasRenderableText
         voiceTracking.setScript(activeScript.text)
+    }
+
+    func selectMicrophone(uid: String?) {
+        preferences.microphoneUID = uid
+        voiceTracking.setMicrophone(uid: uid)
     }
 
     func stopPlayback() {

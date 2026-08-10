@@ -42,10 +42,11 @@ final class VoiceTranscriptionSession {
         return fallback
     }
 
-    func start(onUpdate: @escaping @MainActor (Update) -> Void) async throws {
+    func start(deviceUID: String?, onUpdate: @escaping @MainActor (Update) -> Void) async throws {
         guard let locale = await VoiceTranscriptionSession.resolveSupportedLocale() else {
             throw SessionError.localeNotSupported
         }
+        applyInputDevice(uid: deviceUID)
 
         let transcriber = SpeechTranscriber(
             locale: locale,
@@ -105,6 +106,31 @@ final class VoiceTranscriptionSession {
         Task {
             try? await analyzer?.finalizeAndFinishThroughEndOfInput()
         }
+    }
+
+    private func applyInputDevice(uid: String?) {
+        guard let uid else {
+            NSLog("PrompterGlass: using system default microphone")
+            return
+        }
+        guard let deviceID = AudioInputDevices.coreAudioDeviceID(forUID: uid) else {
+            NSLog("PrompterGlass: microphone %@ not found, using system default", uid)
+            return
+        }
+        guard let audioUnit = audioEngine.inputNode.audioUnit else {
+            NSLog("PrompterGlass: input node has no audio unit, using system default")
+            return
+        }
+        var device = deviceID
+        let status = AudioUnitSetProperty(
+            audioUnit,
+            kAudioOutputUnitProperty_CurrentDevice,
+            kAudioUnitScope_Global,
+            0,
+            &device,
+            UInt32(MemoryLayout<AudioDeviceID>.size)
+        )
+        NSLog("PrompterGlass: selected microphone %@ (status %d)", uid, status)
     }
 
     private func installTap(

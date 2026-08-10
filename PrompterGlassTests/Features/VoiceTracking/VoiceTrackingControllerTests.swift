@@ -9,12 +9,19 @@ struct VoiceTrackingControllerTests {
     private final class FakeSession: VoiceTranscribing {
         var startError: Error?
         private(set) var stopped = false
+        private(set) var startCount = 0
+        private(set) var lastDeviceUID: String?
         private var onUpdate: (@MainActor (VoiceTranscriptionSession.Update) -> Void)?
 
-        func start(onUpdate: @escaping @MainActor (VoiceTranscriptionSession.Update) -> Void) async throws {
+        func start(
+            deviceUID: String?,
+            onUpdate: @escaping @MainActor (VoiceTranscriptionSession.Update) -> Void
+        ) async throws {
             if let startError {
                 throw startError
             }
+            startCount += 1
+            lastDeviceUID = deviceUID
             self.onUpdate = onUpdate
         }
 
@@ -156,6 +163,46 @@ struct VoiceTrackingControllerTests {
         #expect(harness.controller.state == .idle)
         #expect(harness.session.stopped)
         #expect(harness.playback.engine.isVoiceDriven == false)
+    }
+
+    @Test("The chosen microphone is handed to the transcription session")
+    func selectedMicrophoneReachesSession() async {
+        let harness = makeHarness()
+        harness.controller.setMicrophone(uid: "usb-mic-42")
+
+        harness.controller.setEnabled(true)
+        await harness.controller.waitUntilSettled()
+
+        #expect(harness.session.lastDeviceUID == "usb-mic-42")
+    }
+
+    @Test("Switching microphones while listening restarts the session")
+    func switchingMicrophoneRestartsSession() async {
+        let harness = makeHarness()
+        harness.controller.setEnabled(true)
+        await harness.controller.waitUntilSettled()
+        #expect(harness.session.startCount == 1)
+
+        harness.controller.setMicrophone(uid: "usb-mic-42")
+        await harness.controller.waitUntilSettled()
+
+        #expect(harness.session.stopped)
+        #expect(harness.session.startCount == 2)
+        #expect(harness.session.lastDeviceUID == "usb-mic-42")
+        #expect(harness.controller.state == .listening)
+    }
+
+    @Test("Re-selecting the same microphone does not restart the session")
+    func sameMicrophoneIsNoOp() async {
+        let harness = makeHarness()
+        harness.controller.setMicrophone(uid: "usb-mic-42")
+        harness.controller.setEnabled(true)
+        await harness.controller.waitUntilSettled()
+
+        harness.controller.setMicrophone(uid: "usb-mic-42")
+        await harness.controller.waitUntilSettled()
+
+        #expect(harness.session.startCount == 1)
     }
 
     @Test("Stop clears the highlight and turns voice tracking off")

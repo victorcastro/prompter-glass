@@ -24,6 +24,7 @@ final class OverlayPreferencesStore {
         static let backgroundOpacity = "overlay.backgroundOpacity"
         static let textColor = "overlay.textColor"
         static let lastOpenedScriptID = "overlay.lastOpenedScriptID"
+        static let microphoneUID = "voice.microphoneUID"
     }
 
     @ObservationIgnored
@@ -122,6 +123,22 @@ final class OverlayPreferencesStore {
                     defaults.set(newValue.uuidString, forKey: Key.lastOpenedScriptID)
                 } else {
                     defaults.removeObject(forKey: Key.lastOpenedScriptID)
+                }
+            }
+        }
+    }
+
+    var microphoneUID: String? {
+        get {
+            access(keyPath: \.microphoneUID)
+            return defaults.string(forKey: Key.microphoneUID)
+        }
+        set {
+            withMutation(keyPath: \.microphoneUID) {
+                if let newValue {
+                    defaults.set(newValue, forKey: Key.microphoneUID)
+                } else {
+                    defaults.removeObject(forKey: Key.microphoneUID)
                 }
             }
         }

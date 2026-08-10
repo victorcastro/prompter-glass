@@ -46,6 +46,8 @@
 
 - [x] 8.0 Stop turns voice tracking off, clears the yellow highlight, and rewinds to the top (controller stopAndReset + AppEnvironment.stopPlayback wired to the Stop button)
 
+- [x] 8.5 Microphone source picker: device enumeration, CoreAudio device selection on the input node, persisted preference, session restart on change
+
 ## 9. Verification
 
 - [x] 8.1 Full unit test suite green locally (UI tests excluded per repo practice unless requested)

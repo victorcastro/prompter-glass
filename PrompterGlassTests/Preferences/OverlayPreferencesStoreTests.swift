@@ -26,6 +26,18 @@ struct OverlayPreferencesStoreTests {
         #expect(store.lastOpenedScriptID == nil)
     }
 
+    @Test("The microphone choice round-trips and clears back to the system default")
+    func microphoneUIDRoundTrips() {
+        let (store, defaults) = makeStore()
+        #expect(store.microphoneUID == nil)
+
+        store.microphoneUID = "usb-mic-42"
+        #expect(OverlayPreferencesStore(defaults: defaults).microphoneUID == "usb-mic-42")
+
+        store.microphoneUID = nil
+        #expect(OverlayPreferencesStore(defaults: defaults).microphoneUID == nil)
+    }
+
     @Test("The documented defaults are white text on an 80% opaque background")
     func documentedDefaultValues() {
         #expect(OverlayPreferencesStore.Defaults.backgroundOpacity == 0.80)

@@ -58,6 +58,20 @@ While voice tracking is active, the overlay SHALL scroll automatically so the cu
 - **WHEN** the user presses Stop while voice tracking is active
 - **THEN** voice tracking turns off, the yellow highlight is cleared, and the script returns to its first line
 
+### Requirement: The microphone source is selectable
+
+The app SHALL let the user choose which audio input device voice tracking uses, SHALL persist the choice across launches, and SHALL fall back to the system default input when the chosen device is unavailable. Changing the device while listening SHALL restart capture on the new device.
+
+#### Scenario: Choosing a microphone
+
+- **WHEN** the user picks a microphone from the device list
+- **THEN** voice tracking captures audio from that device, restarting the session if it was already listening
+
+#### Scenario: Chosen microphone is unplugged
+
+- **WHEN** voice tracking starts and the persisted microphone is no longer connected
+- **THEN** the app captures from the system default input instead of failing
+
 ### Requirement: Microphone permission is requested and denial is surfaced
 
 The first activation SHALL request microphone and speech-recognition permission. If permission is denied, the app SHALL show a clear non-listening state with a way to open System Settings, and SHALL NOT capture audio.

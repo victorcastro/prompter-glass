@@ -3,6 +3,8 @@ import SwiftUI
 struct ControlPanelView: View {
     @Environment(AppEnvironment.self) private var environment
 
+    @State private var microphones: [AudioInputDevice] = []
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 12) {
@@ -16,6 +18,7 @@ struct ControlPanelView: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
         .background(.bar)
+        .task { microphones = AudioInputDevices.available() }
     }
 
     private var playback: ScrollPlaybackController {
@@ -138,6 +141,12 @@ struct ControlPanelView: View {
                 Color.clear.frame(width: 1, height: 1)
             }
             GridRow {
+                Text("Microphone")
+                microphonePicker
+                    .gridCellAnchor(.leading)
+                Color.clear.frame(width: 1, height: 1)
+            }
+            GridRow {
                 Text("Text color")
                 ColorPicker("Text color", selection: textColor, supportsOpacity: false)
                     .labelsHidden()
@@ -164,6 +173,26 @@ struct ControlPanelView: View {
         .textFieldStyle(.roundedBorder)
         .multilineTextAlignment(.trailing)
         .monospacedDigit()
+    }
+
+    private var microphonePicker: some View {
+        Picker("Microphone", selection: microphoneSelection) {
+            Text("System Default").tag(String?.none)
+            ForEach(microphones) { device in
+                Text(device.name).tag(String?.some(device.uid))
+            }
+        }
+        .labelsHidden()
+        .frame(maxWidth: 240)
+        .accessibilityIdentifier(Identifier.microphonePicker)
+        .help("Microphone used for voice tracking")
+    }
+
+    private var microphoneSelection: Binding<String?> {
+        Binding(
+            get: { environment.voiceTracking.microphoneUID },
+            set: { environment.selectMicrophone(uid: $0) }
+        )
     }
 
     private var voiceTrackingEnabled: Binding<Bool> {
@@ -199,6 +228,7 @@ extension ControlPanelView {
         static let voicePreparing = "controls.voicePreparing"
         static let voiceDenied = "controls.voiceDenied"
         static let voiceUnavailable = "controls.voiceUnavailable"
+        static let microphonePicker = "controls.microphonePicker"
         static let speedSlider = "controls.speed"
         static let fontSizeSlider = "controls.fontSize"
         static let opacitySlider = "controls.opacity"
