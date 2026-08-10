@@ -53,6 +53,11 @@ The Prompter section SHALL host the playback controls: a slider bar with speed, 
 - **WHEN** a script with content is active and the user activates the Roll orb
 - **THEN** overlay scrolling starts and the orb reflects the rolling state
 
+#### Scenario: Rolling with the overlay hidden
+
+- **WHEN** the overlay is hidden and the user activates the Roll orb
+- **THEN** the overlay becomes visible and scrolling starts
+
 #### Scenario: Pausing from the orb
 
 - **WHEN** playback is rolling and the user activates the Roll orb

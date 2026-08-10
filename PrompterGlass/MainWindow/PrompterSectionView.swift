@@ -221,7 +221,7 @@ struct PrompterSectionView: View {
                 isEnabled: playback.hasContent,
                 accessibilityIdentifier: playback.isPlaying ? ControlIdentifier.pause : ControlIdentifier.play
             ) {
-                playback.toggle()
+                environment.toggleRolling()
             }
             HStack {
                 Spacer()

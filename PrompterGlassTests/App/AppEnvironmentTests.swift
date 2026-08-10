@@ -95,6 +95,28 @@ struct AppEnvironmentTests {
         #expect(environment.preferences.overlayFrame?.size == CGSize(width: 640, height: 480))
     }
 
+    @Test("Rolling with the overlay hidden shows it before starting playback")
+    func rollingShowsTheOverlay() {
+        let environment = makeScrollableEnvironment()
+        #expect(environment.overlay.isVisible == false)
+
+        environment.toggleRolling()
+
+        #expect(environment.overlay.isVisible)
+        #expect(environment.playback.isPlaying)
+    }
+
+    @Test("Rolling while playing pauses without hiding the overlay")
+    func rollingAgainPausesAndKeepsOverlay() {
+        let environment = makeScrollableEnvironment()
+        environment.toggleRolling()
+
+        environment.toggleRolling()
+
+        #expect(environment.overlay.isVisible)
+        #expect(environment.playback.isPlaying == false)
+    }
+
     @Test("Emptying the script body through the editor withdraws playback")
     func emptyingTheBodyWithdrawsPlayback() {
         let environment = makeScrollableEnvironment()

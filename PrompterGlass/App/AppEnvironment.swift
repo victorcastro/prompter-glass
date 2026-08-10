@@ -99,6 +99,13 @@ final class AppEnvironment {
         playback.stop()
     }
 
+    func toggleRolling() {
+        if !playback.isPlaying, !overlay.isVisible {
+            setOverlayVisible(true)
+        }
+        playback.toggle()
+    }
+
     func setOverlayVisible(_ visible: Bool) {
         guard visible != overlay.isVisible else { return }
         overlay.setVisible(visible)
