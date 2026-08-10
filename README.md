@@ -59,6 +59,10 @@ In Xcode: select the `PrompterGlass` scheme and hit Run (`⌘R`).
 
 See [CHANGELOG.md](CHANGELOG.md).
 
+## Privacy
+
+See the [Privacy Policy](https://victorcastro.github.io/prompter-glass/privacy) ([source](docs/privacy.md)).
+
 ## Contributing
 
 Open to collaboration. Issues and pull requests are welcome — bug reports, feature ideas, or code. If you plan to tackle something big, open an issue first to discuss the approach.
