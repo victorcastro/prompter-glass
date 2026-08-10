@@ -5,7 +5,9 @@ struct AudioInputDevice: Identifiable, Equatable {
     let uid: String
     let name: String
 
-    var id: String { uid }
+    var id: String {
+        uid
+    }
 }
 
 enum AudioInputDevices {
