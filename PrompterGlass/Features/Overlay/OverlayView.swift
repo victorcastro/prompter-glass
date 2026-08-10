@@ -83,51 +83,74 @@ struct OverlayView: View {
 
     private var script: some View {
         ScrollView(.vertical) {
-            Text(attributedScript)
-                .font(.system(size: preferences.fontSize, weight: .semibold, design: .rounded))
-                .lineSpacing(preferences.fontSize * 0.3)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 32)
-                .padding(.vertical, 24)
-                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
-                    playback.engine.updateContentHeight(Double(height))
-                }
-                .offset(y: -playback.engine.offset)
+            ZStack(alignment: .topLeading) {
+                scriptText(glowLayerText)
+                    .shadow(
+                        color: preferences.recognitionColor.color.opacity(0.6),
+                        radius: 22
+                    )
+                scriptText(baseLayerText)
+                    .shadow(color: .black.opacity(0.5), radius: 2, y: 1)
+            }
+            .animation(.linear(duration: 0.16), value: voiceTracking.highlightedUTF16Length)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 32)
+            .padding(.vertical, 24)
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
+                playback.engine.updateContentHeight(Double(height))
+            }
+            .offset(y: -playback.engine.offset)
         }
         .scrollDisabled(true)
         .scrollIndicators(.hidden)
-        .mask(depthFade)
     }
 
-    private var depthFade: some View {
-        LinearGradient(
-            stops: [
-                .init(color: .white, location: 0),
-                .init(color: .white, location: 0.5),
-                .init(color: .white.opacity(Theme.Palette.overlayUpcomingOpacity), location: 0.8),
-                .init(color: .white.opacity(Theme.Palette.overlayUpcomingOpacity), location: 1)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
+    private func scriptText(_ attributed: AttributedString) -> some View {
+        Text(attributed)
+            .font(.system(size: preferences.fontSize, weight: .semibold, design: .rounded))
+            .lineSpacing(preferences.fontSize * 0.3)
+            .multilineTextAlignment(.leading)
     }
 
-    private var attributedScript: AttributedString {
+    private var textStateBounds: (currentStart: String.Index, spokenEnd: String.Index)? {
         let text = activeScript.text
-        let baseColor = preferences.textColor.color
         let highlightLength = min(voiceTracking.highlightedUTF16Length, text.utf16.count)
-        guard highlightLength > 0 else {
+        guard highlightLength > 0 else { return nil }
+        let spokenEnd = String.Index(utf16Offset: highlightLength, in: text)
+        let spoken = text[..<spokenEnd]
+        let currentStart = spoken.lastIndex(where: \.isWhitespace)
+            .map(text.index(after:)) ?? text.startIndex
+        return (currentStart, spokenEnd)
+    }
+
+    private var baseLayerText: AttributedString {
+        let text = activeScript.text
+        guard let bounds = textStateBounds else {
             var plain = AttributedString(text)
-            plain.foregroundColor = baseColor
+            plain.foregroundColor = preferences.textColor.color
             return plain
         }
-        let end = String.Index(utf16Offset: highlightLength, in: text)
-        var spoken = AttributedString(String(text[..<end]))
-        spoken.foregroundColor = Theme.Palette.overlaySpoken
-        var upcoming = AttributedString(String(text[end...]))
-        upcoming.foregroundColor = baseColor
-        return spoken + upcoming
+        var said = AttributedString(String(text[..<bounds.spokenEnd]))
+        said.foregroundColor = preferences.recognitionColor.color
+        var upcoming = AttributedString(String(text[bounds.spokenEnd...]))
+        upcoming.foregroundColor = preferences.textColor.color
+        return said + upcoming
+    }
+
+    private var glowLayerText: AttributedString {
+        let text = activeScript.text
+        guard let bounds = textStateBounds else {
+            var hidden = AttributedString(text)
+            hidden.foregroundColor = .clear
+            return hidden
+        }
+        var before = AttributedString(String(text[..<bounds.currentStart]))
+        before.foregroundColor = .clear
+        var current = AttributedString(String(text[bounds.currentStart ..< bounds.spokenEnd]))
+        current.foregroundColor = preferences.recognitionColor.color
+        var after = AttributedString(String(text[bounds.spokenEnd...]))
+        after.foregroundColor = .clear
+        return before + current + after
     }
 
     private var emptyState: some View {

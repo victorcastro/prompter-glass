@@ -53,6 +53,12 @@ struct PrompterSettingsPopover: View {
                     .labelsHidden()
                     .accessibilityIdentifier(ControlIdentifier.textColor)
             }
+            GridRow {
+                Text("Recognition color")
+                ColorPicker("Recognition color", selection: recognitionColor, supportsOpacity: false)
+                    .labelsHidden()
+                    .accessibilityIdentifier("controls.recognitionColor")
+            }
         }
         .font(.callout)
         .padding(16)
@@ -99,6 +105,13 @@ struct PrompterSettingsPopover: View {
         Binding(
             get: { environment.preferences.textColor.color },
             set: { environment.preferences.textColor = RGBAColor($0) }
+        )
+    }
+
+    private var recognitionColor: Binding<Color> {
+        Binding(
+            get: { environment.preferences.recognitionColor.color },
+            set: { environment.preferences.recognitionColor = RGBAColor($0) }
         )
     }
 }

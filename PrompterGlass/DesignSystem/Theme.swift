@@ -11,9 +11,6 @@ enum Theme {
         static let textPrimary = Color(hex: 0xF2F0FA)
         static let textSecondary = Color.white.opacity(0.62)
         static let textTertiary = Color.white.opacity(0.40)
-        static let overlaySpoken = Color(hex: 0xF0C93F)
-        static let overlayCurrent = Color(hex: 0xE9F2EC)
-        static let overlayUpcomingOpacity = 0.38
         static let overlayBackdrop = Color(hex: 0x6B6B6B)
     }
 

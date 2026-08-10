@@ -38,10 +38,10 @@ struct OverlayPreferencesStoreTests {
         #expect(OverlayPreferencesStore(defaults: defaults).microphoneUID == nil)
     }
 
-    @Test("The documented defaults are white text on an 80% opaque background")
+    @Test("The documented defaults are warm-white text on an 80% opaque background")
     func documentedDefaultValues() {
         #expect(OverlayPreferencesStore.Defaults.backgroundOpacity == 0.80)
-        #expect(OverlayPreferencesStore.Defaults.textColor == RGBAColor.white)
+        #expect(OverlayPreferencesStore.Defaults.textColor == RGBAColor.warmWhite)
     }
 
     @Test("Every key round-trips through a fresh store reading the same defaults")

@@ -14,7 +14,13 @@ final class OverlayPreferencesStore {
         static let fontSize: Double = 32
         static let scrollSpeed: Double = 60
         static let backgroundOpacity: Double = 0.80
-        static let textColor = RGBAColor.white
+        static let textColor = RGBAColor.warmWhite
+        static let recognitionColor = RGBAColor.recognitionAmber
+    }
+
+    enum Contrast {
+        static let minimumRatio: Double = 4.5
+        static let panelReference = RGBAColor(red: 0.337, green: 0.337, blue: 0.337)
     }
 
     private enum Key {
@@ -23,6 +29,7 @@ final class OverlayPreferencesStore {
         static let scrollSpeed = "overlay.scrollSpeed"
         static let backgroundOpacity = "overlay.backgroundOpacity"
         static let textColor = "overlay.textColor"
+        static let recognitionColor = "overlay.recognitionColor"
         static let lastOpenedScriptID = "overlay.lastOpenedScriptID"
         static let microphoneUID = "voice.microphoneUID"
     }
@@ -107,6 +114,26 @@ final class OverlayPreferencesStore {
             withMutation(keyPath: \.textColor) {
                 guard let data = try? JSONEncoder().encode(newValue) else { return }
                 defaults.set(data, forKey: Key.textColor)
+            }
+        }
+    }
+
+    var recognitionColor: RGBAColor {
+        get {
+            access(keyPath: \.recognitionColor)
+            guard
+                let data = defaults.data(forKey: Key.recognitionColor),
+                let decoded = try? JSONDecoder().decode(RGBAColor.self, from: data),
+                decoded.contrastRatio(against: Contrast.panelReference) >= Contrast.minimumRatio
+            else {
+                return Defaults.recognitionColor
+            }
+            return decoded
+        }
+        set {
+            withMutation(keyPath: \.recognitionColor) {
+                guard let data = try? JSONEncoder().encode(newValue) else { return }
+                defaults.set(data, forKey: Key.recognitionColor)
             }
         }
     }
