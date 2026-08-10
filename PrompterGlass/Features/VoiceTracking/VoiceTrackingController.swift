@@ -174,7 +174,8 @@ final class VoiceTrackingController {
 
         var end = aligner.confirmedEndIndex
         if !update.isFinal, words.count > stableCount, let inProgress = words.last,
-           let speculative = aligner.speculativeEndIndex(ifNextWordIs: inProgress) {
+           let speculative = aligner.speculativeEndIndex(ifNextWordIs: inProgress)
+        {
             end = speculative
         }
         highlightedUTF16Length = end.map {
