@@ -20,28 +20,74 @@ enum Theme {
     enum Glass {
         static let fill = Color.white.opacity(0.07)
         static let fillHighlighted = Color.white.opacity(0.13)
-        static let stroke = Color.white.opacity(0.12)
+        static let stroke = Color.white.opacity(0.10)
         static let cornerRadius: CGFloat = 16
     }
 
-    enum Mood {
+    struct MoodHalo: Equatable {
+        let width: CGFloat
+        let height: CGFloat
+        let centerX: CGFloat
+        let centerY: CGFloat
+        let opacity: Double
+    }
+
+    enum Mood: Equatable {
         case purple
         case forest
         case slate
 
-        var high: Color {
+        var baseStops: [Gradient.Stop] {
             switch self {
-            case .purple: Color(hex: 0x3D3168)
-            case .forest: Color(hex: 0x2E4237)
-            case .slate: Color(hex: 0x2E3742)
+            case .purple:
+                [
+                    .init(color: Color(hex: 0x221A4D), location: 0),
+                    .init(color: Color(hex: 0x2C1F63), location: 0.36),
+                    .init(color: Color(hex: 0x181341), location: 0.74),
+                    .init(color: Color(hex: 0x0B0920), location: 1)
+                ]
+            case .forest:
+                [
+                    .init(color: Color(hex: 0x0B2F2A), location: 0),
+                    .init(color: Color(hex: 0x0A3B34), location: 0.34),
+                    .init(color: Color(hex: 0x07231F), location: 0.72),
+                    .init(color: Color(hex: 0x050F0E), location: 1)
+                ]
+            case .slate:
+                [
+                    .init(color: Color(hex: 0x1E2735), location: 0),
+                    .init(color: Color(hex: 0x253243), location: 0.35),
+                    .init(color: Color(hex: 0x141B26), location: 0.73),
+                    .init(color: Color(hex: 0x0A0E14), location: 1)
+                ]
             }
         }
 
-        var low: Color {
+        var glow: Color {
             switch self {
-            case .purple: Color(hex: 0x231C3D)
-            case .forest: Color(hex: 0x1C2823)
-            case .slate: Color(hex: 0x1B2129)
+            case .purple: Color(hex: 0x9678FF)
+            case .forest: Color(hex: 0x5BE3B3)
+            case .slate: Color(hex: 0x7FA6D9)
+            }
+        }
+
+        var halos: [MoodHalo] {
+            switch self {
+            case .purple:
+                [
+                    MoodHalo(width: 0.66, height: 0.52, centerX: 0.46, centerY: 0.18, opacity: 0.30),
+                    MoodHalo(width: 0.40, height: 0.40, centerX: 0.88, centerY: 0.92, opacity: 0.12)
+                ]
+            case .forest:
+                [
+                    MoodHalo(width: 0.70, height: 0.55, centerX: 0.50, centerY: 0.24, opacity: 0.26),
+                    MoodHalo(width: 0.40, height: 0.40, centerX: 0.88, centerY: 0.92, opacity: 0.14)
+                ]
+            case .slate:
+                [
+                    MoodHalo(width: 0.66, height: 0.52, centerX: 0.48, centerY: 0.20, opacity: 0.22),
+                    MoodHalo(width: 0.40, height: 0.40, centerX: 0.88, centerY: 0.92, opacity: 0.12)
+                ]
             }
         }
     }

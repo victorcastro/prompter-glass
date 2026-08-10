@@ -35,9 +35,16 @@ Token values (sRGB, extracted from references):
 | `accentIrisSoft` | `#9D8FF5` | secondary accent text, deltas |
 | `accentAmber` | `#F5C842` | voice: spoken highlight, voice pill, voice chip |
 | `orbTop` / `orbBottom` | `#C8D4EE` / `#8B7FD6` | Roll orb gradient |
-| `moodPurple` hi/lo | `#3D3168` / `#231C3D` | Library background gradient |
-| `moodForest` hi/lo | `#2E4237` / `#1C2823` | Prompter background gradient |
-| `moodSlate` hi/lo | `#2E3742` / `#1B2129` | reserved for p03 activity |
+| `moodPurple` | `#221A4D` → `#2C1F63` @36% → `#181341` @74% → `#0B0920`, glow `#9678FF` | Library aurora background |
+| `moodForest` | `#0B2F2A` → `#0A3B34` @34% → `#07231F` @72% → `#050F0E`, glow `#5BE3B3` | Prompter aurora background |
+| `moodSlate` | `#1E2735` → `#253243` @35% → `#141B26` @73% → `#0A0E14`, glow `#7FA6D9` | reserved for p03 activity |
+
+Aurora structure (D1b): base linear gradient at 165° (4 stops per mood), plus elliptical
+radial glow halos in the mood's accent — a large one top center-left (25–30% opacity,
+~70%×55% of the container, fading to transparent at 68% of its radius) and a small
+counterweight halo bottom-right (12–14%). Halos never reach the edges and never exceed
+30% opacity; glass cards (white 7% fill, white 10% stroke) sit on top so the glow reads
+through them. Mood switches animate over 400 ms.
 | `sidebarScrim` | black @ 28% | sidebar darkening over the section mood gradient |
 | `glassFill` / `glassStroke` | white 7% / white 12% | cards, containers |
 | `textPrimary` | `#F2F0FA` | titles |
