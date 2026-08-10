@@ -51,6 +51,8 @@ struct MainWindowView: View {
                 onCreate: createScript,
                 onDelete: delete
             )
+        case .activity:
+            ActivitySectionView()
         }
     }
 

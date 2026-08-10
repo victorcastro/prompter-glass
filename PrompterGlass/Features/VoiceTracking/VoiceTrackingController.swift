@@ -36,6 +36,10 @@ final class VoiceTrackingController {
 
     private(set) var state: State = .idle
     private(set) var highlightedUTF16Length = 0
+    private(set) var confirmedWordCount = 0
+
+    @ObservationIgnored
+    var onWordCountChanged: ((Int) -> Void)?
 
     private(set) var microphoneUID: String?
 
@@ -88,6 +92,7 @@ final class VoiceTrackingController {
         aligner = ScriptAligner(tokens: ScriptTokenizer.tokenize(text))
         volatileWordCount = 0
         highlightedUTF16Length = 0
+        confirmedWordCount = 0
         if isActive {
             stopListening()
         }
@@ -107,6 +112,7 @@ final class VoiceTrackingController {
         aligner.reset()
         volatileWordCount = 0
         highlightedUTF16Length = 0
+        confirmedWordCount = 0
     }
 
     func setEnabled(_ enabled: Bool) {
@@ -169,6 +175,8 @@ final class VoiceTrackingController {
         if stableCount > volatileWordCount {
             aligner.ingest(Array(words[volatileWordCount ..< stableCount]))
             playback.updateVoiceProgress(aligner.progress)
+            confirmedWordCount = aligner.confirmedCount
+            onWordCountChanged?(confirmedWordCount)
         }
         volatileWordCount = update.isFinal ? 0 : stableCount
 

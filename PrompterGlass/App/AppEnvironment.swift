@@ -10,6 +10,10 @@ final class AppEnvironment {
     let playback: ScrollPlaybackController
     let voiceTracking: VoiceTrackingController
     let overlay: OverlayPresenter
+    let sessionRecorder: SessionRecorder
+
+    @ObservationIgnored
+    var onSessionRecorded: ((SessionDraft) -> Void)?
 
     @ObservationIgnored
     private nonisolated(unsafe) var terminationObserver: NSObjectProtocol?
@@ -17,9 +21,14 @@ final class AppEnvironment {
     @ObservationIgnored
     private let notificationCenter: NotificationCenter
 
-    init(preferences: OverlayPreferencesStore, notificationCenter: NotificationCenter = .default) {
+    init(
+        preferences: OverlayPreferencesStore,
+        notificationCenter: NotificationCenter = .default,
+        sessionClock: @escaping () -> Date = Date.init
+    ) {
         let activeScript = ActiveScriptStore(preferences: preferences)
         let playback = ScrollPlaybackController(preferences: preferences)
+        sessionRecorder = SessionRecorder(clock: sessionClock)
         let voiceTracking = VoiceTrackingController(
             playback: playback,
             permission: .live,
@@ -47,6 +56,7 @@ final class AppEnvironment {
             }
         )
         voiceTracking.setMicrophone(uid: preferences.microphoneUID)
+        wireSessionRecording()
         terminationObserver = notificationCenter.addObserver(
             forName: NSApplication.willTerminateNotification,
             object: nil,
@@ -65,7 +75,45 @@ final class AppEnvironment {
     }
 
     func prepareForTermination() {
+        finishSessionIfNeeded()
         overlay.tearDown()
+    }
+
+    private func wireSessionRecording() {
+        playback.engine.onStateChange = { [weak self] oldState, newState in
+            self?.handlePlaybackTransition(from: oldState, to: newState)
+        }
+        voiceTracking.onWordCountChanged = { [weak self] count in
+            self?.sessionRecorder.noteSpokenWords(count)
+        }
+    }
+
+    private func handlePlaybackTransition(
+        from oldState: ScrollPlaybackEngine.State,
+        to newState: ScrollPlaybackEngine.State
+    ) {
+        switch (oldState, newState) {
+        case (.stopped, .playing):
+            sessionRecorder.playbackStarted(
+                scriptID: activeScript.script?.id,
+                scriptTitle: activeScript.script?.title ?? Script.defaultTitle,
+                usingVoice: voiceTracking.isActive
+            )
+        case (.paused, .playing):
+            sessionRecorder.resume()
+            sessionRecorder.noteVoiceUsed(voiceTracking.isActive)
+        case (_, .paused):
+            sessionRecorder.pause()
+        case (_, .stopped):
+            finishSessionIfNeeded()
+        default:
+            break
+        }
+    }
+
+    private func finishSessionIfNeeded() {
+        guard let draft = sessionRecorder.finish(reachedEnd: playback.engine.didReachEnd) else { return }
+        onSessionRecorded?(draft)
     }
 
     func selectScript(_ script: Script?) {

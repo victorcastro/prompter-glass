@@ -3,6 +3,7 @@ import SwiftUI
 enum AppSection: String, CaseIterable, Identifiable {
     case prompter
     case library
+    case activity
 
     var id: String {
         rawValue
@@ -12,6 +13,7 @@ enum AppSection: String, CaseIterable, Identifiable {
         switch self {
         case .prompter: "Prompter"
         case .library: "Library"
+        case .activity: "My activity"
         }
     }
 
@@ -19,6 +21,7 @@ enum AppSection: String, CaseIterable, Identifiable {
         switch self {
         case .prompter: "play.fill"
         case .library: "text.alignleft"
+        case .activity: "clock"
         }
     }
 
@@ -26,6 +29,7 @@ enum AppSection: String, CaseIterable, Identifiable {
         switch self {
         case .prompter: .forest
         case .library: .purple
+        case .activity: .slate
         }
     }
 }

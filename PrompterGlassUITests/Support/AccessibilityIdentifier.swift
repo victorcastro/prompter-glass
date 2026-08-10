@@ -2,6 +2,18 @@ enum AccessibilityIdentifier {
     enum Sidebar {
         static let prompter = "sidebar.prompter"
         static let library = "sidebar.library"
+        static let activity = "sidebar.activity"
+    }
+
+    enum Activity {
+        static let pace = "activity.pace"
+        static let timeOnAir = "activity.timeOnAir"
+        static let retakes = "activity.retakes"
+        static let export = "activity.export"
+        static let clear = "activity.clear"
+        static let confirmClear = "activity.confirmClear"
+        static let cancelClear = "activity.cancelClear"
+        static let emptyState = "activity.emptyState"
     }
 
     enum Library {
