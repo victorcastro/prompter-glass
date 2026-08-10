@@ -1,4 +1,9 @@
 enum AccessibilityIdentifier {
+    enum Sidebar {
+        static let prompter = "sidebar.prompter"
+        static let library = "sidebar.library"
+    }
+
     enum Library {
         static let list = "library.list"
         static let create = "library.create"
@@ -8,6 +13,7 @@ enum AccessibilityIdentifier {
         static let cancelDelete = "library.cancelDelete"
         static let rowTitle = "library.rowTitle"
         static let rowDate = "library.rowDate"
+        static let back = "library.back"
     }
 
     enum Editor {

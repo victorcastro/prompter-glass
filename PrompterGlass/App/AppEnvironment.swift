@@ -34,13 +34,14 @@ final class AppEnvironment {
         overlay = OverlayPresenter(
             preferences: preferences,
             onDisplayViewChange: { [weak playback] view in playback?.displaySourceView = view },
-            makeContent: {
+            makeContent: { presenter in
                 AnyView(
                     OverlayView(
                         activeScript: activeScript,
                         playback: playback,
                         voiceTracking: voiceTracking,
-                        preferences: preferences
+                        preferences: preferences,
+                        overlay: presenter
                     )
                 )
             }

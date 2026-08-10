@@ -1,0 +1,18 @@
+enum ControlIdentifier {
+    static let play = "controls.play"
+    static let pause = "controls.pause"
+    static let stop = "controls.stop"
+    static let overlayToggle = "controls.overlayToggle"
+    static let clickThroughToggle = "controls.clickThroughToggle"
+    static let voiceToggle = "controls.voiceToggle"
+    static let voicePreparing = "controls.voicePreparing"
+    static let voiceDenied = "controls.voiceDenied"
+    static let voiceUnavailable = "controls.voiceUnavailable"
+    static let microphonePicker = "controls.microphonePicker"
+    static let speed = "controls.speed"
+    static let fontSize = "controls.fontSize"
+    static let opacity = "controls.opacity"
+    static let textColor = "controls.textColor"
+    static let overlayWidth = "controls.overlayWidth"
+    static let overlayHeight = "controls.overlayHeight"
+}

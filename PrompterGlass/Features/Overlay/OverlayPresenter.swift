@@ -19,7 +19,7 @@ final class OverlayPresenter {
     private let preferences: OverlayPreferencesStore
 
     @ObservationIgnored
-    private let makeContent: () -> AnyView
+    private let makeContent: (OverlayPresenter) -> AnyView
 
     @ObservationIgnored
     private var controller: OverlayWindowController?
@@ -30,7 +30,7 @@ final class OverlayPresenter {
     init(
         preferences: OverlayPreferencesStore,
         onDisplayViewChange: ((NSView?) -> Void)? = nil,
-        makeContent: @escaping () -> AnyView
+        makeContent: @escaping (OverlayPresenter) -> AnyView
     ) {
         self.preferences = preferences
         self.onDisplayViewChange = onDisplayViewChange
@@ -80,7 +80,7 @@ final class OverlayPresenter {
             presenter: self,
             isClickThroughEnabled: isClickThroughEnabled,
             preferredSize: size,
-            content: makeContent(),
+            content: makeContent(self),
             onDisplayViewChange: onDisplayViewChange
         )
         controller = created
