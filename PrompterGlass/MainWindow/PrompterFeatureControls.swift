@@ -31,18 +31,12 @@ struct FeatureRow: View {
 }
 
 struct PrompterSettingsPopover: View {
-    let microphones: [AudioInputDevice]
-
     @Environment(AppEnvironment.self) private var environment
 
     var body: some View {
         @Bindable var overlay = environment.overlay
 
         return Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 12) {
-            GridRow {
-                Text("Microphone")
-                microphonePicker
-            }
             GridRow {
                 Text("Overlay size")
                 sizeFields(overlay: $overlay)
@@ -79,26 +73,6 @@ struct PrompterSettingsPopover: View {
         .textFieldStyle(.roundedBorder)
         .multilineTextAlignment(.trailing)
         .monospacedDigit()
-    }
-
-    private var microphonePicker: some View {
-        Picker("Microphone", selection: microphoneSelection) {
-            Text("System Default").tag(String?.none)
-            ForEach(microphones) { device in
-                Text(device.name).tag(String?.some(device.uid))
-            }
-        }
-        .labelsHidden()
-        .frame(maxWidth: 240)
-        .accessibilityIdentifier(ControlIdentifier.microphonePicker)
-        .help("Microphone used for voice tracking")
-    }
-
-    private var microphoneSelection: Binding<String?> {
-        Binding(
-            get: { environment.voiceTracking.microphoneUID },
-            set: { environment.selectMicrophone(uid: $0) }
-        )
     }
 
     private var textColor: Binding<Color> {

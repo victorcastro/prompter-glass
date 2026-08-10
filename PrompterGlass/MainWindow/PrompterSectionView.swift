@@ -72,6 +72,7 @@ struct PrompterSectionView: View {
                 identifier: ControlIdentifier.voiceToggle,
                 disabled: !environment.playback.hasContent
             )
+            microphoneRow
             voiceStatus
             FeatureRow(
                 icon: "cursorarrow.rays",
@@ -87,6 +88,33 @@ struct PrompterSectionView: View {
 
     private var voiceDetail: String {
         environment.voiceTracking.isActive ? "highlights what you have said" : "off"
+    }
+
+    private var microphoneRow: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "mic")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(Theme.Palette.textTertiary)
+            Picker("Microphone", selection: microphoneSelection) {
+                Text("System Default").tag(String?.none)
+                ForEach(microphones) { device in
+                    Text(device.name).tag(String?.some(device.uid))
+                }
+            }
+            .labelsHidden()
+            .controlSize(.small)
+            .frame(maxWidth: 240)
+            .accessibilityIdentifier(ControlIdentifier.microphonePicker)
+            .help("Microphone used for voice tracking")
+        }
+        .padding(.leading, 46)
+    }
+
+    private var microphoneSelection: Binding<String?> {
+        Binding(
+            get: { environment.voiceTracking.microphoneUID },
+            set: { environment.selectMicrophone(uid: $0) }
+        )
     }
 
     @ViewBuilder
@@ -204,7 +232,7 @@ struct PrompterSectionView: View {
         .buttonStyle(.plain)
         .accessibilityIdentifier("controls.settings")
         .popover(isPresented: $isShowingSettings, arrowEdge: .top) {
-            PrompterSettingsPopover(microphones: microphones)
+            PrompterSettingsPopover()
                 .environment(environment)
         }
     }
