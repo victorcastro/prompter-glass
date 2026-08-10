@@ -10,7 +10,15 @@ final class ScrollPlaybackEngine {
         case paused
     }
 
-    private(set) var state: State = .stopped
+    private(set) var state: State = .stopped {
+        didSet {
+            guard oldValue != state else { return }
+            onStateChange?(oldValue, state)
+        }
+    }
+
+    @ObservationIgnored
+    var onStateChange: ((State, State) -> Void)?
 
     private(set) var offset: Double = 0
 
@@ -22,6 +30,11 @@ final class ScrollPlaybackEngine {
 
     private(set) var contentHeight: Double = 0
     private(set) var viewportHeight: Double = 0
+
+    private(set) var voiceTargetOffset: Double?
+
+    private static let voiceEasingRate: Double = 4
+    private static let voiceReadingZoneFraction: Double = 1.0 / 3.0
 
     var maxOffset: Double {
         max(0, contentHeight - viewportHeight)
@@ -60,10 +73,46 @@ final class ScrollPlaybackEngine {
         state = .stopped
         offset = 0
         didReachEnd = false
+        voiceTargetOffset = nil
+    }
+
+    var isVoiceDriven: Bool {
+        voiceTargetOffset != nil
+    }
+
+    func startVoiceTracking() {
+        guard hasContent else { return }
+        didReachEnd = false
+        voiceTargetOffset = offset
+        state = .playing
+    }
+
+    func endVoiceTracking() {
+        guard isVoiceDriven else { return }
+        voiceTargetOffset = nil
+        state = offset > 0 ? .paused : .stopped
+    }
+
+    func setVoiceTarget(progress: Double) {
+        guard isVoiceDriven, progress.isFinite else { return }
+        let clamped = progress.clamped(to: 0 ... 1)
+        let anchor = clamped * contentHeight - viewportHeight * ScrollPlaybackEngine.voiceReadingZoneFraction
+        voiceTargetOffset = anchor.clamped(to: 0 ... max(0, maxOffset))
+    }
+
+    func seek(toProgress progress: Double) {
+        guard hasContent, progress.isFinite else { return }
+        offset = progress.clamped(to: 0 ... 1) * maxOffset
+        didReachEnd = false
     }
 
     func advance(by deltaTime: TimeInterval) {
         guard state == .playing, deltaTime > 0 else { return }
+        if let target = voiceTargetOffset {
+            let step = min(1, deltaTime * ScrollPlaybackEngine.voiceEasingRate)
+            offset += (target - offset) * step
+            return
+        }
         let limit = maxOffset
         guard limit > 0 else {
             finishAtEnd(limit: 0)
@@ -79,8 +128,8 @@ final class ScrollPlaybackEngine {
 
     private func finishAtEnd(limit: Double) {
         offset = limit
-        state = .stopped
         didReachEnd = true
+        state = .stopped
     }
 
     func updateContentHeight(_ newValue: Double) {

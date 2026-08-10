@@ -8,42 +8,51 @@ struct MainWindowView: View {
     @Query(sort: \Script.updatedAt, order: .reverse)
     private var scripts: [Script]
 
+    @AppStorage("main.section")
+    private var storedSection = AppSection.prompter.rawValue
+
     @State private var selectedScriptID: Script.ID?
+    @State private var editingScriptID: Script.ID?
 
     var body: some View {
-        NavigationSplitView {
-            ScriptLibraryView(
-                scripts: scripts,
-                selection: $selectedScriptID,
-                onCreate: createScript,
-                onDelete: delete
-            )
-            .navigationSplitViewColumnWidth(min: 220, ideal: 260)
-        } detail: {
-            detail
+        HStack(spacing: 0) {
+            SidebarView(section: sectionBinding)
+            sectionContent
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .background(MoodBackground(mood: section.mood))
+        .preferredColorScheme(.dark)
         .task { restoreSelection() }
         .onChange(of: selectedScriptID) { _, _ in environment.selectScript(selectedScript) }
         .onChange(of: scripts) { _, _ in reconcileSelection() }
     }
 
-    private var detail: some View {
-        VStack(spacing: 0) {
-            if let script = selectedScript {
-                ScriptEditorView(script: script, onCommit: environment.refreshPlaybackAvailability)
-                    .id(script.id)
-            } else {
-                ContentUnavailableView(
-                    "No script selected",
-                    systemImage: "text.alignleft",
-                    description: Text("Pick a script from the library, or create one.")
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
+    private var section: AppSection {
+        AppSection(rawValue: storedSection) ?? .prompter
+    }
 
-            Divider()
+    private var sectionBinding: Binding<AppSection> {
+        Binding(
+            get: { section },
+            set: { storedSection = $0.rawValue }
+        )
+    }
 
-            ControlPanelView()
+    @ViewBuilder
+    private var sectionContent: some View {
+        switch section {
+        case .prompter:
+            PrompterSectionView(onOpenLibrary: { storedSection = AppSection.library.rawValue })
+        case .library:
+            ScriptLibraryView(
+                scripts: scripts,
+                selection: $selectedScriptID,
+                editingScriptID: $editingScriptID,
+                onCreate: createScript,
+                onDelete: delete
+            )
+        case .activity:
+            ActivitySectionView()
         }
     }
 
@@ -58,6 +67,9 @@ struct MainWindowView: View {
     }
 
     private func reconcileSelection() {
+        if let editingScriptID, !scripts.contains(where: { $0.id == editingScriptID }) {
+            self.editingScriptID = nil
+        }
         if let selectedScriptID, !scripts.contains(where: { $0.id == selectedScriptID }) {
             self.selectedScriptID = nil
             environment.clearActiveScript()
@@ -70,12 +82,16 @@ struct MainWindowView: View {
         let script = Script()
         modelContext.insert(script)
         selectedScriptID = script.id
+        editingScriptID = script.id
     }
 
     private func delete(_ script: Script) {
         let wasActive = environment.activeScript.script?.id == script.id
         if selectedScriptID == script.id {
             selectedScriptID = nil
+        }
+        if editingScriptID == script.id {
+            editingScriptID = nil
         }
         modelContext.delete(script)
         if wasActive {

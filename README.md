@@ -7,13 +7,9 @@ A native macOS teleprompter with a transparent floating window that stays on top
 
 ## Screenshots
 
-The main window, where you write your scripts and control playback and appearance:
+The Prompter tab, where you pick a script, tune speed, text size and backdrop, and start rolling:
 
-![Main window with the script editor, playback controls and appearance settings](docs/images/main-window.png)
-
-The floating overlay reading a script over the desktop — transparent, always on top, and readable over anything:
-
-![Transparent overlay showing a script in large green text over the desktop](docs/images/overlay.png)
+![Prompter tab with the glass panel preview, voice tracking and click-through toggles, and speed, text size and backdrop controls](docs/images/tab-prompter.png)
 
 ## Project status
 
@@ -26,6 +22,7 @@ The floating overlay reading a script over the desktop — transparent, always o
 - **Never steals focus** — clicking or dragging the overlay leaves your recording or call app frontmost and in control of the keyboard.
 - **Click-through mode** — make the overlay ignore the mouse entirely so you can work underneath it.
 - **Scroll playback** — play, pause, resume and stop, with adjustable speed in points per second. Scrolling is display-linked and frame-rate independent.
+- **Voice tracking** — optional on-device speech recognition follows your voice through the script, highlights what you have already read in yellow, and scrolls to keep your reading position in view. Nothing ever leaves your Mac.
 - **Readable over anything** — adjustable font size, background opacity and text color. The text stays fully opaque no matter how transparent the background gets.
 
 Everything is controlled from the main window; the overlay itself is chrome-free by design.

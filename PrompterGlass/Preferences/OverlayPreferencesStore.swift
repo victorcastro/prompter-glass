@@ -13,8 +13,14 @@ final class OverlayPreferencesStore {
     enum Defaults {
         static let fontSize: Double = 32
         static let scrollSpeed: Double = 60
-        static let backgroundOpacity: Double = 0.55
-        static let textColor = RGBAColor.white
+        static let backgroundOpacity: Double = 0.80
+        static let textColor = RGBAColor.warmWhite
+        static let recognitionColor = RGBAColor.recognitionAmber
+    }
+
+    enum Contrast {
+        static let minimumRatio: Double = 4.5
+        static let panelReference = RGBAColor(red: 0.337, green: 0.337, blue: 0.337)
     }
 
     private enum Key {
@@ -23,7 +29,9 @@ final class OverlayPreferencesStore {
         static let scrollSpeed = "overlay.scrollSpeed"
         static let backgroundOpacity = "overlay.backgroundOpacity"
         static let textColor = "overlay.textColor"
+        static let recognitionColor = "overlay.recognitionColor"
         static let lastOpenedScriptID = "overlay.lastOpenedScriptID"
+        static let microphoneUID = "voice.microphoneUID"
     }
 
     @ObservationIgnored
@@ -110,6 +118,26 @@ final class OverlayPreferencesStore {
         }
     }
 
+    var recognitionColor: RGBAColor {
+        get {
+            access(keyPath: \.recognitionColor)
+            guard
+                let data = defaults.data(forKey: Key.recognitionColor),
+                let decoded = try? JSONDecoder().decode(RGBAColor.self, from: data),
+                decoded.contrastRatio(against: Contrast.panelReference) >= Contrast.minimumRatio
+            else {
+                return Defaults.recognitionColor
+            }
+            return decoded
+        }
+        set {
+            withMutation(keyPath: \.recognitionColor) {
+                guard let data = try? JSONEncoder().encode(newValue) else { return }
+                defaults.set(data, forKey: Key.recognitionColor)
+            }
+        }
+    }
+
     var lastOpenedScriptID: UUID? {
         get {
             access(keyPath: \.lastOpenedScriptID)
@@ -127,17 +155,26 @@ final class OverlayPreferencesStore {
         }
     }
 
+    var microphoneUID: String? {
+        get {
+            access(keyPath: \.microphoneUID)
+            return defaults.string(forKey: Key.microphoneUID)
+        }
+        set {
+            withMutation(keyPath: \.microphoneUID) {
+                if let newValue {
+                    defaults.set(newValue, forKey: Key.microphoneUID)
+                } else {
+                    defaults.removeObject(forKey: Key.microphoneUID)
+                }
+            }
+        }
+    }
+
     private func clamped(_ key: String, default fallback: Double, to range: ClosedRange<Double>) -> Double {
         guard defaults.object(forKey: key) != nil else { return fallback }
         let stored = defaults.double(forKey: key)
         guard stored.isFinite else { return fallback }
         return stored.clamped(to: range)
-    }
-}
-
-extension Double {
-    func clamped(to range: ClosedRange<Double>) -> Double {
-        guard isFinite else { return range.lowerBound }
-        return min(max(self, range.lowerBound), range.upperBound)
     }
 }

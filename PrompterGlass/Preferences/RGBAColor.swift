@@ -21,6 +21,21 @@ struct RGBAColor: Codable, Equatable {
 
 extension RGBAColor {
     static let white = RGBAColor(red: 1, green: 1, blue: 1)
+    static let warmWhite = RGBAColor(red: 234 / 255, green: 246 / 255, blue: 239 / 255)
+    static let recognitionAmber = RGBAColor(red: 1, green: 216 / 255, blue: 77 / 255)
+
+    var relativeLuminance: Double {
+        func linearized(_ component: Double) -> Double {
+            component <= 0.03928 ? component / 12.92 : pow((component + 0.055) / 1.055, 2.4)
+        }
+        return 0.2126 * linearized(red) + 0.7152 * linearized(green) + 0.0722 * linearized(blue)
+    }
+
+    func contrastRatio(against other: RGBAColor) -> Double {
+        let lighter = max(relativeLuminance, other.relativeLuminance)
+        let darker = min(relativeLuminance, other.relativeLuminance)
+        return (lighter + 0.05) / (darker + 0.05)
+    }
 
     var color: Color {
         Color(.sRGB, red: red, green: green, blue: blue, opacity: alpha)

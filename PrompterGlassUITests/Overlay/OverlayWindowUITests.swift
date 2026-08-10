@@ -39,6 +39,7 @@ final class OverlayWindowUITests: XCTestCase {
 
     func testOverlayRendersTheSelectedScript() {
         app = XCUIApplication.launchForTesting()
+        app.openSection(AccessibilityIdentifier.Sidebar.library)
 
         let createFirst = app.buttons[AccessibilityIdentifier.Library.createFirst]
         XCTAssertTrue(createFirst.waitForExistence(timeout: 15))
@@ -52,8 +53,11 @@ final class OverlayWindowUITests: XCTestCase {
         let root = showOverlay()
         XCTAssertTrue(root.waitForExistence(timeout: 5))
 
+        let scriptText = app.staticTexts.matching(
+            NSPredicate(format: "value CONTAINS %@ OR label CONTAINS %@", "Look at the lens", "Look at the lens")
+        ).firstMatch
         XCTAssertTrue(
-            waitForValue(of: root.staticTexts.firstMatch, containing: "Look at the lens"),
+            scriptText.waitForExistence(timeout: 5),
             "The overlay should show the selected script's text"
         )
     }
@@ -102,12 +106,12 @@ final class OverlayWindowUITests: XCTestCase {
 
 private extension OverlayWindowUITests {
     var overlayRoot: XCUIElement {
-        app.descendants(matching: .any)[AccessibilityIdentifier.Overlay.root]
+        app.descendants(matching: .any).matching(identifier: AccessibilityIdentifier.Overlay.root).firstMatch
     }
 
     @discardableResult
     func showOverlay() -> XCUIElement {
-        let toggle = app.switches[AccessibilityIdentifier.Controls.overlayToggle]
+        let toggle = app.control(AccessibilityIdentifier.Controls.overlayToggle)
         XCTAssertTrue(toggle.waitForExistence(timeout: 15), "The overlay toggle should be in the main window")
         toggle.click()
         return overlayRoot

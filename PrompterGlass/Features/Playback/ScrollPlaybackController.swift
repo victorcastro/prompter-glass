@@ -71,6 +71,20 @@ final class ScrollPlaybackController {
         }
     }
 
+    func startVoiceFollowing() {
+        engine.startVoiceTracking()
+        syncDriver()
+    }
+
+    func stopVoiceFollowing() {
+        engine.endVoiceTracking()
+        syncDriver()
+    }
+
+    func updateVoiceProgress(_ progress: Double) {
+        engine.setVoiceTarget(progress: progress)
+    }
+
     private func syncDriver() {
         if isPlaying {
             resolvedDriver.start()

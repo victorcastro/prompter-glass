@@ -185,4 +185,36 @@ struct ScrollPlaybackEngineTests {
         #expect(engine.maxOffset == 250)
         #expect(engine.offset == 125)
     }
+
+    @Test("Seeking moves the offset to the requested progress")
+    func seekMovesOffset() {
+        let engine = makeEngine()
+
+        engine.seek(toProgress: 0.5)
+
+        #expect(engine.offset == engine.maxOffset / 2)
+    }
+
+    @Test("Seeking clamps out-of-range and non-finite progress")
+    func seekClampsInput() {
+        let engine = makeEngine()
+
+        engine.seek(toProgress: 2)
+        #expect(engine.offset == engine.maxOffset)
+
+        engine.seek(toProgress: -1)
+        #expect(engine.offset == 0)
+
+        engine.seek(toProgress: .nan)
+        #expect(engine.offset == 0)
+    }
+
+    @Test("Seeking without content is ignored")
+    func seekWithoutContentIsIgnored() {
+        let engine = ScrollPlaybackEngine()
+
+        engine.seek(toProgress: 0.5)
+
+        #expect(engine.offset == 0)
+    }
 }

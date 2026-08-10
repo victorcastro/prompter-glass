@@ -9,7 +9,7 @@ import Testing
 struct OverlayPresenterTests {
     private func makePresenter(preferences: OverlayPreferencesStore? = nil) -> OverlayPresenter {
         let store = preferences ?? OverlayPreferencesStore(defaults: makeDefaults().defaults)
-        return OverlayPresenter(preferences: store) {
+        return OverlayPresenter(preferences: store) { _ in
             AnyView(EmptyView())
         }
     }
@@ -88,7 +88,7 @@ struct OverlayPresenterTests {
         let presenter = OverlayPresenter(
             preferences: store,
             onDisplayViewChange: { received.append($0) },
-            makeContent: { AnyView(EmptyView()) }
+            makeContent: { _ in AnyView(EmptyView()) }
         )
 
         presenter.setVisible(true)
@@ -108,7 +108,7 @@ struct OverlayPresenterTests {
         let presenter = OverlayPresenter(
             preferences: store,
             onDisplayViewChange: { received.append($0) },
-            makeContent: { AnyView(EmptyView()) }
+            makeContent: { _ in AnyView(EmptyView()) }
         )
 
         presenter.tearDown()
