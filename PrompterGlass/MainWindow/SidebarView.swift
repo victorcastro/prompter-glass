@@ -18,7 +18,7 @@ struct SidebarView: View {
         .padding(.bottom, 12)
         .frame(width: 232)
         .frame(maxHeight: .infinity)
-        .background(Theme.Palette.sidebarBase.opacity(0.92))
+        .background(Theme.Palette.sidebarScrim)
     }
 
     private func sectionButton(for item: AppSection) -> some View {

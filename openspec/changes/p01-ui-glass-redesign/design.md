@@ -38,7 +38,7 @@ Token values (sRGB, extracted from references):
 | `moodPurple` hi/lo | `#3D3168` / `#231C3D` | Library background gradient |
 | `moodForest` hi/lo | `#2E4237` / `#1C2823` | Prompter background gradient |
 | `moodSlate` hi/lo | `#2E3742` / `#1B2129` | reserved for p03 activity |
-| `sidebarBase` | `#191428` @ 92% | sidebar background |
+| `sidebarScrim` | black @ 28% | sidebar darkening over the section mood gradient |
 | `glassFill` / `glassStroke` | white 7% / white 12% | cards, containers |
 | `textPrimary` | `#F2F0FA` | titles |
 | `textSecondary` / `textTertiary` | white 62% / 40% | body, meta |

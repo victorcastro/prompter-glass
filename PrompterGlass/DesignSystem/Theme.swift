@@ -7,7 +7,7 @@ enum Theme {
         static let accentAmber = Color(hex: 0xF5C842)
         static let orbTop = Color(hex: 0xC8D4EE)
         static let orbBottom = Color(hex: 0x8B7FD6)
-        static let sidebarBase = Color(hex: 0x191428)
+        static let sidebarScrim = Color.black.opacity(0.28)
         static let textPrimary = Color(hex: 0xF2F0FA)
         static let textSecondary = Color.white.opacity(0.62)
         static let textTertiary = Color.white.opacity(0.40)
