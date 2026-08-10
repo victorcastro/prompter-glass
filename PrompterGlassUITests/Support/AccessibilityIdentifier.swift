@@ -1,0 +1,41 @@
+enum AccessibilityIdentifier {
+    enum Library {
+        static let list = "library.list"
+        static let create = "library.create"
+        static let createFirst = "library.createFirst"
+        static let delete = "library.delete"
+        static let confirmDelete = "library.confirmDelete"
+        static let cancelDelete = "library.cancelDelete"
+
+        static func row(_ title: String) -> String {
+            "library.row.\(title)"
+        }
+
+        static func rowDate(_ title: String) -> String {
+            "library.rowDate.\(title)"
+        }
+    }
+
+    enum Editor {
+        static let title = "editor.title"
+        static let body = "editor.body"
+    }
+
+    enum Controls {
+        static let play = "controls.play"
+        static let pause = "controls.pause"
+        static let stop = "controls.stop"
+        static let overlayToggle = "controls.overlayToggle"
+        static let clickThroughToggle = "controls.clickThroughToggle"
+        static let speed = "controls.speed"
+        static let fontSize = "controls.fontSize"
+        static let opacity = "controls.opacity"
+        static let textColor = "controls.textColor"
+        static let overlayWidth = "controls.overlayWidth"
+        static let overlayHeight = "controls.overlayHeight"
+    }
+
+    enum Overlay {
+        static let root = "overlay.root"
+    }
+}
