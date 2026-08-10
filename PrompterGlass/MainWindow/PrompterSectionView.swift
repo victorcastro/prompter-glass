@@ -211,7 +211,7 @@ struct PrompterSectionView: View {
             }
             Slider(value: binding, in: range)
                 .controlSize(.small)
-                .tint(Theme.Palette.accentIris)
+                .tint(.white)
                 .accessibilityIdentifier(identifier)
         }
         .frame(maxWidth: .infinity)

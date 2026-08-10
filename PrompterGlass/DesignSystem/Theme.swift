@@ -65,9 +65,9 @@ enum Theme {
 
         var glow: Color {
             switch self {
-            case .purple: Color(hex: 0x9678FF)
-            case .forest: Color(hex: 0x5BE3B3)
-            case .slate: Color(hex: 0x7FA6D9)
+            case .purple: Color(hex: 0x9B85EE)
+            case .forest: Color(hex: 0x8FD3BC)
+            case .slate: Color(hex: 0x8FB0D6)
             }
         }
 
@@ -75,18 +75,18 @@ enum Theme {
             switch self {
             case .purple:
                 [
-                    MoodHalo(width: 0.66, height: 0.52, centerX: 0.46, centerY: 0.18, opacity: 0.30),
-                    MoodHalo(width: 0.40, height: 0.40, centerX: 0.88, centerY: 0.92, opacity: 0.12)
+                    MoodHalo(width: 0.95, height: 0.80, centerX: 0.52, centerY: 0.26, opacity: 0.22),
+                    MoodHalo(width: 0.45, height: 0.45, centerX: 0.88, centerY: 0.92, opacity: 0.09)
                 ]
             case .forest:
                 [
-                    MoodHalo(width: 0.70, height: 0.55, centerX: 0.50, centerY: 0.24, opacity: 0.26),
-                    MoodHalo(width: 0.40, height: 0.40, centerX: 0.88, centerY: 0.92, opacity: 0.14)
+                    MoodHalo(width: 0.95, height: 0.80, centerX: 0.55, centerY: 0.30, opacity: 0.20),
+                    MoodHalo(width: 0.45, height: 0.45, centerX: 0.88, centerY: 0.92, opacity: 0.08)
                 ]
             case .slate:
                 [
-                    MoodHalo(width: 0.66, height: 0.52, centerX: 0.48, centerY: 0.20, opacity: 0.22),
-                    MoodHalo(width: 0.40, height: 0.40, centerX: 0.88, centerY: 0.92, opacity: 0.12)
+                    MoodHalo(width: 0.95, height: 0.80, centerX: 0.52, centerY: 0.26, opacity: 0.18),
+                    MoodHalo(width: 0.45, height: 0.45, centerX: 0.88, centerY: 0.92, opacity: 0.08)
                 ]
             }
         }

@@ -14,10 +14,25 @@ struct MoodBackground: View {
                 ForEach(Array(mood.halos.enumerated()), id: \.offset) { _, halo in
                     haloView(halo, in: proxy.size)
                 }
+                vignette(in: proxy.size)
             }
         }
         .ignoresSafeArea()
         .animation(.easeInOut(duration: 0.4), value: mood)
+    }
+
+    private func vignette(in size: CGSize) -> some View {
+        RadialGradient(
+            stops: [
+                .init(color: .clear, location: 0),
+                .init(color: .clear, location: 0.55),
+                .init(color: Color.black.opacity(0.38), location: 1)
+            ],
+            center: UnitPoint(x: 0.5, y: 0.42),
+            startRadius: 0,
+            endRadius: max(size.width, size.height) * 0.78
+        )
+        .allowsHitTesting(false)
     }
 
     private func haloView(_ halo: Theme.MoodHalo, in size: CGSize) -> some View {
@@ -29,7 +44,8 @@ struct MoodBackground: View {
                 RadialGradient(
                     stops: [
                         .init(color: mood.glow.opacity(halo.opacity), location: 0),
-                        .init(color: .clear, location: 0.68)
+                        .init(color: mood.glow.opacity(halo.opacity * 0.45), location: 0.38),
+                        .init(color: .clear, location: 0.75)
                     ],
                     center: .center,
                     startRadius: 0,
