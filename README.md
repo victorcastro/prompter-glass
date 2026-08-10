@@ -5,6 +5,16 @@ A native macOS teleprompter with a transparent floating window that stays on top
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Platform: macOS](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)
 
+## Screenshots
+
+The main window, where you write your scripts and control playback and appearance:
+
+![Main window with the script editor, playback controls and appearance settings](docs/images/main-window.png)
+
+The floating overlay reading a script over the desktop — transparent, always on top, and readable over anything:
+
+![Transparent overlay showing a script in large green text over the desktop](docs/images/overlay.png)
+
 ## Project status
 
 **WIP — early development.** The project is just getting started: no release, no installer, no signed binary. The only way to use it today is to build it from source in Xcode. Structure and internal APIs will change without notice.
