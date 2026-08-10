@@ -13,7 +13,7 @@ struct PrompterGlassApp: App {
         let arguments = ProcessInfo.processInfo.arguments
         let isUITesting = arguments.contains(PrompterGlassApp.uiTestArgument)
         let shouldReset = arguments.contains(PrompterGlassApp.uiTestResetArgument)
-        modelContainer = PrompterGlassApp.makeModelContainer(inMemory: isUITesting)
+        modelContainer = ModelContainerFactory.make(inMemory: isUITesting)
         let defaults = PrompterGlassApp.makeDefaults(isUITesting: isUITesting, reset: shouldReset)
         _environment = State(
             initialValue: AppEnvironment(preferences: OverlayPreferencesStore(defaults: defaults))
@@ -34,16 +34,6 @@ struct PrompterGlassApp: App {
                 }
                 .keyboardShortcut("o", modifiers: [.command, .shift])
             }
-        }
-    }
-
-    private static func makeModelContainer(inMemory: Bool) -> ModelContainer {
-        let schema = Schema([Script.self])
-        let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory)
-        do {
-            return try ModelContainer(for: schema, configurations: [configuration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
         }
     }
 

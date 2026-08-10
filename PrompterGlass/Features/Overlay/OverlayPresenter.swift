@@ -69,7 +69,6 @@ final class OverlayPresenter {
     func tearDown() {
         controller?.tearDown()
         controller = nil
-        onDisplayViewChange?(nil)
     }
 
     private var resolvedController: OverlayWindowController {

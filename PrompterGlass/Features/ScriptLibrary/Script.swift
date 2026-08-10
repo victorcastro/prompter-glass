@@ -28,6 +28,10 @@ final class Script {
 extension Script {
     static let defaultTitle = "Untitled Script"
 
+    var canReceiveEdits: Bool {
+        modelContext != nil && !isDeleted
+    }
+
     static func normalizedTitle(_ title: String) -> String {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.isEmpty ? defaultTitle : trimmed

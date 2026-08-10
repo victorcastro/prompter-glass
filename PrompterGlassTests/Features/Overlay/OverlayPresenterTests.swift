@@ -80,4 +80,39 @@ struct OverlayPresenterTests {
 
         #expect(presenter.size == CGSize(width: 712, height: 244))
     }
+
+    @Test("Tearing down a visible overlay clears the display view exactly once")
+    func tearDownClearsDisplayViewOnce() {
+        var received: [NSView?] = []
+        let store = OverlayPreferencesStore(defaults: makeDefaults().defaults)
+        let presenter = OverlayPresenter(
+            preferences: store,
+            onDisplayViewChange: { received.append($0) },
+            makeContent: { AnyView(EmptyView()) }
+        )
+
+        presenter.setVisible(true)
+        #expect(received.count == 1)
+        #expect(received[0] != nil)
+
+        presenter.tearDown()
+
+        #expect(received.count == 2)
+        #expect(received[1] == nil)
+    }
+
+    @Test("Tearing down a never-shown overlay emits no display view callback")
+    func tearDownWithoutPanelEmitsNothing() {
+        var received: [NSView?] = []
+        let store = OverlayPreferencesStore(defaults: makeDefaults().defaults)
+        let presenter = OverlayPresenter(
+            preferences: store,
+            onDisplayViewChange: { received.append($0) },
+            makeContent: { AnyView(EmptyView()) }
+        )
+
+        presenter.tearDown()
+
+        #expect(received.isEmpty)
+    }
 }

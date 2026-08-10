@@ -131,7 +131,7 @@ The app SHALL provide a click-through mode in which the overlay ignores all mous
 
 ### Requirement: Overlay position and size persist across launches
 
-The app SHALL save the overlay's frame when it is moved or resized and SHALL restore that frame the next time the overlay is shown, including after a relaunch.
+The app SHALL save the overlay's frame when it is moved or resized and SHALL restore that frame the next time the overlay is shown, including after a relaunch. Any pending debounced frame save SHALL be flushed when the app terminates, so a move or resize immediately before quitting is never lost.
 
 #### Scenario: Frame restored after relaunch
 
@@ -162,4 +162,18 @@ The app SHALL save the overlay's frame when it is moved or resized and SHALL res
 
 - **WHEN** the overlay is shown for the first time on a display smaller than 800 by 600
 - **THEN** the overlay is sized to fit that display instead of extending past its edges
+
+#### Scenario: Quit within the save debounce window
+
+- **WHEN** the user moves or resizes the overlay and quits the app before the debounced save fires
+- **THEN** the final frame is persisted during termination and restored on the next launch
+
+### Requirement: Overlay tears down on app termination
+
+The app SHALL run the overlay teardown path when the application terminates, releasing the overlay window and emitting the display-view-cleared callback exactly once.
+
+#### Scenario: App quits with overlay visible
+
+- **WHEN** the app terminates while the overlay is visible
+- **THEN** overlay teardown runs, the pending frame save is flushed, and the display-view-cleared callback fires exactly once
 

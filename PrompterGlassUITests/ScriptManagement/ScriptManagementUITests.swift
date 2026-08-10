@@ -36,7 +36,7 @@ final class ScriptManagementUITests: XCTestCase {
 
         setTitle("Launch Video")
 
-        let row = app.staticTexts[AccessibilityIdentifier.Library.row("Launch Video")]
+        let row = libraryRow(titled: "Launch Video")
         XCTAssertTrue(row.waitForExistence(timeout: 5), "The library row should show the edited title")
     }
 
@@ -50,7 +50,7 @@ final class ScriptManagementUITests: XCTestCase {
         XCTAssertTrue(titleField.waitForExistence(timeout: 5))
         setTitle("Second")
 
-        app.staticTexts[AccessibilityIdentifier.Library.row("First")].click()
+        libraryRow(titled: "First").click()
 
         let reopened = bodyEditor
         XCTAssertTrue(reopened.waitForExistence(timeout: 5))
@@ -66,8 +66,8 @@ final class ScriptManagementUITests: XCTestCase {
         XCTAssertTrue(titleField.waitForExistence(timeout: 5))
         setTitle("Newer")
 
-        let newer = app.staticTexts[AccessibilityIdentifier.Library.row("Newer")]
-        let older = app.staticTexts[AccessibilityIdentifier.Library.row("Older")]
+        let newer = libraryRow(titled: "Newer")
+        let older = libraryRow(titled: "Older")
         XCTAssertTrue(newer.waitForExistence(timeout: 5))
         XCTAssertTrue(older.waitForExistence(timeout: 5))
 
@@ -130,9 +130,16 @@ private extension ScriptManagementUITests {
         XCTAssertTrue(titleField.waitForExistence(timeout: 5))
         setTitle(title)
 
-        let row = app.staticTexts[AccessibilityIdentifier.Library.row(title)]
+        let row = libraryRow(titled: title)
         XCTAssertTrue(row.waitForExistence(timeout: 5))
         return row
+    }
+
+    func libraryRow(titled title: String) -> XCUIElement {
+        app.staticTexts
+            .matching(identifier: AccessibilityIdentifier.Library.rowTitle)
+            .matching(NSPredicate(format: "label == %@ OR value == %@", title, title))
+            .firstMatch
     }
 
     func setTitle(_ title: String) {

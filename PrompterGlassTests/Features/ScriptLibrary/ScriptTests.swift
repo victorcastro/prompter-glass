@@ -92,4 +92,32 @@ struct ScriptTests {
         let fetched = try context.fetch(FetchDescriptor<Script>())
         #expect(fetched.isEmpty)
     }
+
+    @Test("An inserted script can receive edits")
+    func insertedScriptCanReceiveEdits() throws {
+        let context = try makeContext()
+        let script = Script(title: "Live")
+        context.insert(script)
+
+        #expect(script.canReceiveEdits)
+    }
+
+    @Test("A deleted script refuses edits so a pending autosave becomes a no-op")
+    func deletedScriptRefusesEdits() throws {
+        let context = try makeContext()
+        let script = Script(title: "Doomed", body: "keep")
+        context.insert(script)
+        try context.save()
+
+        context.delete(script)
+
+        #expect(script.canReceiveEdits == false)
+    }
+
+    @Test("A script that was never inserted refuses edits")
+    func detachedScriptRefusesEdits() {
+        let script = Script(title: "Detached")
+
+        #expect(script.canReceiveEdits == false)
+    }
 }

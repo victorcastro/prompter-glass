@@ -6,14 +6,8 @@ enum AccessibilityIdentifier {
         static let delete = "library.delete"
         static let confirmDelete = "library.confirmDelete"
         static let cancelDelete = "library.cancelDelete"
-
-        static func row(_ title: String) -> String {
-            "library.row.\(title)"
-        }
-
-        static func rowDate(_ title: String) -> String {
-            "library.rowDate.\(title)"
-        }
+        static let rowTitle = "library.rowTitle"
+        static let rowDate = "library.rowDate"
     }
 
     enum Editor {

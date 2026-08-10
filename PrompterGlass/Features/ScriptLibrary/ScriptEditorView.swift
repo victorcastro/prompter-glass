@@ -64,6 +64,7 @@ struct ScriptEditorView: View {
     }
 
     private func commit() {
+        guard script.canReceiveEdits else { return }
         script.apply(title: title, body: bodyText)
         onCommit()
     }

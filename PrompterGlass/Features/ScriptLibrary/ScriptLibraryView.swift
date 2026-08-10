@@ -77,11 +77,11 @@ struct ScriptLibraryView: View {
             Text(script.title)
                 .font(.body)
                 .lineLimit(1)
-                .accessibilityIdentifier(Identifier.row(script.title))
+                .accessibilityIdentifier(Identifier.rowTitle)
             Text(script.updatedAt, format: .relative(presentation: .named))
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .accessibilityIdentifier(Identifier.rowDate(script.title))
+                .accessibilityIdentifier(Identifier.rowDate)
         }
         .padding(.vertical, 2)
     }
@@ -122,13 +122,7 @@ extension ScriptLibraryView {
         static let createFirst = "library.createFirst"
         static let confirmDelete = "library.confirmDelete"
         static let cancelDelete = "library.cancelDelete"
-
-        static func row(_ title: String) -> String {
-            "library.row.\(title)"
-        }
-
-        static func rowDate(_ title: String) -> String {
-            "library.rowDate.\(title)"
-        }
+        static let rowTitle = "library.rowTitle"
+        static let rowDate = "library.rowDate"
     }
 }

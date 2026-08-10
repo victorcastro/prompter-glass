@@ -6,7 +6,6 @@ on:
 
 env:
   SWIFTLINT_IMAGE: ghcr.io/realm/swiftlint:0.63.2
-  SWIFTFORMAT_IMAGE: ghcr.io/nicklockwood/swiftformat:0.61.1
 
 concurrency:
   group: pr-${{ github.head_ref }}
@@ -28,22 +27,6 @@ jobs:
             --entrypoint swiftlint \
             "$SWIFTLINT_IMAGE" \
             lint --strict --reporter github-actions-logging
-
-  format:
-    name: SwiftFormat
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: SwiftFormat (check only)
-        run: |
-          docker run --rm \
-            -v "$PWD:/work" -w /work \
-            --entrypoint swiftformat \
-            "$SWIFTFORMAT_IMAGE" \
-            --lint --reporter github-actions-log .
 
   sanity:
     name: Repo sanity

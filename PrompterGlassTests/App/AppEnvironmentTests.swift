@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 import Testing
 @testable import PrompterGlass
@@ -5,11 +6,14 @@ import Testing
 @MainActor
 @Suite("App environment coordination")
 struct AppEnvironmentTests {
-    private func makeEnvironment() -> AppEnvironment {
+    private func makeEnvironment(notificationCenter: NotificationCenter = .default) -> AppEnvironment {
         let suite = UUID().uuidString
         let defaults = UserDefaults(suiteName: suite) ?? .standard
         defaults.removePersistentDomain(forName: suite)
-        return AppEnvironment(preferences: OverlayPreferencesStore(defaults: defaults))
+        return AppEnvironment(
+            preferences: OverlayPreferencesStore(defaults: defaults),
+            notificationCenter: notificationCenter
+        )
     }
 
     private func makeScrollableEnvironment() -> AppEnvironment {
@@ -75,6 +79,20 @@ struct AppEnvironmentTests {
         #expect(environment.preferences.lastOpenedScriptID == nil)
         #expect(environment.playback.engine.state == .stopped)
         #expect(environment.playback.hasContent == false)
+    }
+
+    @Test("App termination tears down the overlay and flushes the pending frame save")
+    func terminationTearsDownOverlayAndFlushesFrame() {
+        let center = NotificationCenter()
+        let environment = makeEnvironment(notificationCenter: center)
+        environment.setOverlayVisible(true)
+        #expect(environment.playback.displaySourceView != nil)
+
+        environment.overlay.setSize(CGSize(width: 640, height: 480))
+        center.post(name: NSApplication.willTerminateNotification, object: nil)
+
+        #expect(environment.playback.displaySourceView == nil)
+        #expect(environment.preferences.overlayFrame?.size == CGSize(width: 640, height: 480))
     }
 
     @Test("Emptying the script body through the editor withdraws playback")
