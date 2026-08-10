@@ -1,0 +1,140 @@
+:root {
+  color-scheme: light dark;
+  --bg: #fafafa;
+  --fg: #1d1d1f;
+  --muted: #6e6e73;
+  --accent: #0a84ff;
+  --card: #ffffff;
+  --border: #e5e5ea;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #101013;
+    --fg: #f2f2f7;
+    --muted: #98989f;
+    --accent: #409cff;
+    --card: #1b1b1f;
+    --border: #2c2c31;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+header.site {
+  padding: 3.5rem 1.5rem 2.5rem;
+  text-align: center;
+}
+
+header.site h1 {
+  margin: 0 0 0.4rem;
+  font-size: 2.4rem;
+  letter-spacing: -0.02em;
+}
+
+header.site p.tagline {
+  margin: 0 auto;
+  max-width: 40rem;
+  color: var(--muted);
+  font-size: 1.15rem;
+}
+
+nav.site {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0 1.5rem 1rem;
+  flex-wrap: wrap;
+}
+
+nav.site a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav.site a:hover {
+  text-decoration: underline;
+}
+
+main {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 4rem;
+}
+
+main.wide {
+  max-width: 62rem;
+}
+
+h2 {
+  margin-top: 2.2rem;
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--accent);
+}
+
+p.meta {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+figure {
+  margin: 2rem 0;
+}
+
+figure img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  display: block;
+}
+
+figcaption {
+  margin-top: 0.6rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+ul {
+  padding-left: 1.3rem;
+}
+
+li {
+  margin: 0.35rem 0;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem 1.75rem;
+  margin: 1.5rem 0;
+}
+
+footer.site {
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  text-align: center;
+  padding: 2rem 1.5rem 3rem;
+  font-size: 0.95rem;
+}
+
+footer.site a {
+  color: var(--muted);
+}

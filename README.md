@@ -61,7 +61,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## Privacy
 
-See the [Privacy Policy](https://victorcastro.github.io/prompter-glass/privacy) ([source](docs/privacy.md)).
+See the [Privacy Policy](https://victorcastro.github.io/prompter-glass/privacy.html) ([source](docs/privacy.html)).
 
 ## Contributing
 
