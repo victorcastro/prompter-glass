@@ -24,9 +24,10 @@ struct PrompterGlassApp: App {
         WindowGroup {
             MainWindowView()
                 .environment(environment)
-                .frame(minWidth: 860, minHeight: 560)
+                .frame(minWidth: 1280, minHeight: 760)
         }
         .windowStyle(.hiddenTitleBar)
+        .defaultSize(width: 1280, height: 760)
         .modelContainer(modelContainer)
         .commands {
             CommandGroup(after: .toolbar) {
