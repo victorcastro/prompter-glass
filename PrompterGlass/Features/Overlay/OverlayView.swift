@@ -7,15 +7,12 @@ struct OverlayView: View {
     let preferences: OverlayPreferencesStore
     let overlay: OverlayPresenter
 
-    private static let guideFraction: CGFloat = 0.38
     private static let cornerRadius: CGFloat = 18
 
     var body: some View {
         ZStack(alignment: .top) {
             Theme.Palette.overlayBackdrop
                 .opacity(preferences.backgroundOpacity)
-
-            guideLine
 
             content
                 .padding(.top, 44)
@@ -82,16 +79,6 @@ struct OverlayView: View {
         let remaining = (engine.maxOffset - engine.offset) / playback.speed
         guard remaining.isFinite, remaining >= 0 else { return nil }
         return Int(remaining.rounded())
-    }
-
-    private var guideLine: some View {
-        GeometryReader { proxy in
-            Rectangle()
-                .fill(Color.white.opacity(0.18))
-                .frame(height: 1)
-                .offset(y: proxy.size.height * OverlayView.guideFraction)
-        }
-        .allowsHitTesting(false)
     }
 
     private var script: some View {

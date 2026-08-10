@@ -51,18 +51,9 @@ The overlay SHALL show a top status bar containing: a playback state pill readin
 - **WHEN** playback is rolling
 - **THEN** the meta line's time-left value decreases as the script scrolls
 
-### Requirement: Reading guide line
-
-The overlay SHALL draw a subtle horizontal guide line at a fixed reading height in the upper-middle of the viewport, indicating where the current line of the script sits while scrolling.
-
-#### Scenario: Guide visible over the backdrop
-
-- **WHEN** the overlay shows a script
-- **THEN** a thin horizontal guide line is visible across the overlay at the reading height, beneath the text
-
 ### Requirement: Three-state script text hierarchy
 
-The overlay SHALL render script text in three visual states: text already spoken in the amber highlight with a soft glow, the current reading zone in the full-opacity text color, and upcoming text dimmed. Without voice tracking, no spoken state is shown and the current/upcoming states still apply relative to the guide line.
+The overlay SHALL render script text in three visual states: text already spoken in the amber highlight with a soft glow, the current reading zone in the full-opacity text color, and upcoming text dimmed. Without voice tracking, no spoken state is shown and the current/upcoming states still apply relative to the reading height.
 
 #### Scenario: Voice tracking highlights spoken text
 
