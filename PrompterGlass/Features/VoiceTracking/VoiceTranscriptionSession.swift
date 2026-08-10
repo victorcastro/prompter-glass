@@ -109,7 +109,7 @@ final class VoiceTranscriptionSession {
     ) throws {
         let inputFormat = audioEngine.inputNode.outputFormat(forBus: 0)
         let converter = AVAudioConverter(from: inputFormat, to: analyzerFormat)
-        audioEngine.inputNode.installTap(onBus: 0, bufferSize: 4096, format: inputFormat) { buffer, _ in
+        audioEngine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: inputFormat) { buffer, _ in
             guard let converted = VoiceTranscriptionSession.convert(
                 buffer,
                 using: converter,

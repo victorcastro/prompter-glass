@@ -135,7 +135,40 @@ struct VoiceTrackingControllerTests {
         harness.session.emit("one two", isFinal: true)
         harness.session.emit("three four")
 
-        #expect(harness.controller.highlightedUTF16Length == "one two three".utf16.count)
+        #expect(harness.controller.highlightedUTF16Length == "one two three four".utf16.count)
+    }
+
+    @Test("The word being spoken is highlighted speculatively as soon as it matches")
+    func speculativeHighlightAppearsImmediately() async {
+        let harness = makeHarness(script: "hello world how are you")
+        harness.controller.setEnabled(true)
+        await harness.controller.waitUntilSettled()
+
+        harness.session.emit("hello")
+
+        #expect(harness.controller.highlightedUTF16Length == "hello".utf16.count)
+    }
+
+    @Test("A wrong in-progress word is not highlighted")
+    func wrongSpeculationDoesNotHighlight() async {
+        let harness = makeHarness(script: "hello world how are you")
+        harness.controller.setEnabled(true)
+        await harness.controller.waitUntilSettled()
+
+        harness.session.emit("goodbye")
+
+        #expect(harness.controller.highlightedUTF16Length == 0)
+    }
+
+    @Test("A partial prefix of the next word lights it up early")
+    func partialPrefixSpeculates() async {
+        let harness = makeHarness(script: "teleprompter overlay")
+        harness.controller.setEnabled(true)
+        await harness.controller.waitUntilSettled()
+
+        harness.session.emit("telep")
+
+        #expect(harness.controller.highlightedUTF16Length == "teleprompter".utf16.count)
     }
 
     @Test("A word that finishes forming is ingested complete, not as its early prefix")
@@ -149,7 +182,7 @@ struct VoiceTrackingControllerTests {
         harness.session.emit("I'm applying")
         harness.session.emit("I'm applying for")
 
-        #expect(harness.controller.highlightedUTF16Length == "I'm applying".utf16.count)
+        #expect(harness.controller.highlightedUTF16Length == "I'm applying for".utf16.count)
     }
 
     @Test("Disabling stops the session and pauses playback")

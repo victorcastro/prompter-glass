@@ -39,6 +39,15 @@ struct ScriptAligner {
         pendingSkip = nil
     }
 
+    func speculativeEndIndex(ifNextWordIs word: String) -> String.Index? {
+        let normalized = ScriptTokenizer.normalize(word)
+        guard !normalized.isEmpty, confirmedCount < tokens.count else { return nil }
+        let next = tokens[confirmedCount]
+        let isPartialPrefix = normalized.count >= 3 && next.normalized.hasPrefix(normalized)
+        guard isPartialPrefix || matches(normalized, next.normalized) else { return nil }
+        return next.range.upperBound
+    }
+
     private mutating func ingestNormalized(_ word: String) {
         guard confirmedCount < tokens.count else { return }
 

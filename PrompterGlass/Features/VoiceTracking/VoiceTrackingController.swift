@@ -166,20 +166,19 @@ final class VoiceTrackingController {
     private func handle(_ update: VoiceTranscriptionSession.Update) {
         let words = update.text.split(whereSeparator: \.isWhitespace).map(String.init)
         let stableCount = update.isFinal ? words.count : max(words.count - 1, 0)
-        guard stableCount > volatileWordCount else {
-            if update.isFinal { volatileWordCount = 0 }
-            return
+        if stableCount > volatileWordCount {
+            aligner.ingest(Array(words[volatileWordCount ..< stableCount]))
+            playback.updateVoiceProgress(aligner.progress)
         }
-        let fresh = Array(words[volatileWordCount ..< stableCount])
         volatileWordCount = update.isFinal ? 0 : stableCount
-        guard !fresh.isEmpty else { return }
 
-        aligner.ingest(fresh)
-        if let end = aligner.confirmedEndIndex {
-            highlightedUTF16Length = scriptText.utf16.distance(from: scriptText.startIndex, to: end)
-        } else {
-            highlightedUTF16Length = 0
+        var end = aligner.confirmedEndIndex
+        if !update.isFinal, words.count > stableCount, let inProgress = words.last,
+           let speculative = aligner.speculativeEndIndex(ifNextWordIs: inProgress) {
+            end = speculative
         }
-        playback.updateVoiceProgress(aligner.progress)
+        highlightedUTF16Length = end.map {
+            scriptText.utf16.distance(from: scriptText.startIndex, to: $0)
+        } ?? 0
     }
 }
