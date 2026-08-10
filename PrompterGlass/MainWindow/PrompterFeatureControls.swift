@@ -10,15 +10,14 @@ struct FeatureRow: View {
     let disabled: Bool
 
     var body: some View {
-        HStack(spacing: 12) {
-            IconChip(systemImage: icon, style: .tinted(tint), side: 30)
+        HStack(spacing: 14) {
+            IconChip(systemImage: icon, style: .tinted(tint), side: 32)
             Text(name)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(Theme.Palette.textPrimary)
             Text(detail)
-                .font(.system(size: 12))
+                .font(.system(size: 13))
                 .foregroundStyle(Theme.Palette.textTertiary)
-            Spacer()
             Toggle(name, isOn: toggle)
                 .toggleStyle(.switch)
                 .controlSize(.mini)
@@ -26,8 +25,8 @@ struct FeatureRow: View {
                 .tint(Theme.Palette.accentIris)
                 .accessibilityIdentifier(identifier)
                 .disabled(disabled)
+                .padding(.leading, 4)
         }
-        .frame(maxWidth: 420, alignment: .leading)
     }
 }
 

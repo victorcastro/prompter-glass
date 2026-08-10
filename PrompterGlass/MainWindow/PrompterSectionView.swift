@@ -10,40 +10,42 @@ struct PrompterSectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            Spacer(minLength: 24)
             if let script = environment.activeScript.script {
                 hero(for: script)
             } else {
                 emptyState
             }
-            featureRows
-                .padding(.top, 24)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Spacer(minLength: 16)
-            controlsBar
+            Spacer(minLength: 24)
+            HStack(alignment: .center, spacing: 24) {
+                controlsBar
+                timeScrubber
+            }
             transport
                 .padding(.top, 18)
                 .padding(.bottom, 20)
         }
-        .padding(.horizontal, 32)
-        .padding(.top, 40)
+        .padding(.horizontal, 48)
         .task { microphones = AudioInputDevices.available() }
     }
 
     private func hero(for script: Script) -> some View {
-        HStack(alignment: .center, spacing: 36) {
+        HStack(alignment: .center, spacing: 56) {
             heroPanelGraphic
             VStack(alignment: .leading, spacing: 14) {
                 Text(script.title)
-                    .font(.system(size: 36, weight: .light))
+                    .font(.system(size: 42, weight: .light))
                     .foregroundStyle(Theme.Palette.textPrimary)
                     .lineLimit(2)
                 Text(heroSubtitle(for: script))
-                    .font(.system(size: 13))
+                    .font(.system(size: 14))
                     .foregroundStyle(Theme.Palette.textSecondary)
+                    .frame(maxWidth: 420, alignment: .leading)
+                featureRows
+                    .padding(.top, 16)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity)
     }
 
     private func heroSubtitle(for script: Script) -> String {
@@ -54,19 +56,36 @@ struct PrompterSectionView: View {
     }
 
     private var heroPanelGraphic: some View {
-        GlassCard {
-            VStack(alignment: .leading, spacing: 10) {
-                ForEach(0 ..< 3, id: \.self) { line in
-                    Capsule()
-                        .fill(Color.white.opacity(0.55 - Double(line) * 0.12))
-                        .frame(width: 120 - CGFloat(line) * 28, height: 9)
-                }
+        ZStack(alignment: .leading) {
+            RoundedRectangle(cornerRadius: 32, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.30), Color.white.opacity(0.08)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+            RoundedRectangle(cornerRadius: 32, style: .continuous)
+                .fill(
+                    RadialGradient(
+                        colors: [Theme.Palette.accentIris.opacity(0.28), .clear],
+                        center: UnitPoint(x: 0.75, y: 0.85),
+                        startRadius: 0,
+                        endRadius: 220
+                    )
+                )
+            RoundedRectangle(cornerRadius: 32, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.35), lineWidth: 1)
+            VStack(alignment: .leading, spacing: 13) {
+                Capsule().fill(Color.white.opacity(0.9)).frame(width: 180, height: 13)
+                Capsule().fill(Color.white.opacity(0.75)).frame(width: 200, height: 13)
+                Capsule().fill(Color.white.opacity(0.55)).frame(width: 130, height: 13)
             }
-            .padding(28)
-            .frame(width: 220, height: 150, alignment: .leading)
+            .padding(.leading, 40)
         }
-        .rotation3DEffect(.degrees(8), axis: (x: 0.4, y: -1, z: 0.1))
-        .shadow(color: .black.opacity(0.35), radius: 24, y: 14)
+        .frame(width: 300, height: 225)
+        .rotation3DEffect(.degrees(10), axis: (x: 0.35, y: -1, z: 0.15))
+        .shadow(color: .black.opacity(0.45), radius: 30, y: 18)
     }
 
     private var featureRows: some View {
@@ -122,14 +141,18 @@ struct PrompterSectionView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: 12) {
+        HStack(alignment: .center, spacing: 56) {
             heroPanelGraphic
-            Text("No script selected")
-                .font(.system(size: 22, weight: .light))
-                .foregroundStyle(Theme.Palette.textPrimary)
-            Button("Pick one from the Library", action: onOpenLibrary)
-                .buttonStyle(.borderedProminent)
-                .tint(Theme.Palette.accentIris)
+            VStack(alignment: .leading, spacing: 14) {
+                Text("No script selected")
+                    .font(.system(size: 42, weight: .light))
+                    .foregroundStyle(Theme.Palette.textPrimary)
+                Button("Pick one from the Library", action: onOpenLibrary)
+                    .buttonStyle(.borderedProminent)
+                    .tint(Theme.Palette.accentIris)
+                featureRows
+                    .padding(.top, 16)
+            }
         }
         .frame(maxWidth: .infinity)
     }
@@ -138,7 +161,7 @@ struct PrompterSectionView: View {
         @Bindable var preferences = environment.preferences
         @Bindable var playbackControls = environment.playback
 
-        return GlassCard {
+        return DarkBar {
             HStack(spacing: 24) {
                 sliderColumn(
                     label: "Speed",
@@ -211,6 +234,38 @@ struct PrompterSectionView: View {
             PrompterSettingsPopover(microphones: microphones)
                 .environment(environment)
         }
+    }
+
+    private var timeScrubber: some View {
+        let engine = environment.playback.engine
+        let speed = max(environment.playback.speed, 1)
+        let elapsed = Int((engine.offset / speed).rounded())
+        let remaining = Int(((engine.maxOffset - engine.offset) / speed).rounded())
+
+        return VStack(spacing: 6) {
+            HStack {
+                Text(ScriptMetrics.formatted(seconds: elapsed))
+                Spacer()
+                Text("-" + ScriptMetrics.formatted(seconds: max(0, remaining)))
+            }
+            .font(.system(size: 11))
+            .foregroundStyle(Theme.Palette.textTertiary)
+            .monospacedDigit()
+            Slider(value: scrubberProgress, in: 0 ... 1)
+                .controlSize(.mini)
+                .tint(Color.white.opacity(0.7))
+                .disabled(!environment.playback.hasContent)
+                .accessibilityIdentifier("controls.scrubber")
+        }
+        .frame(width: 220)
+    }
+
+    private var scrubberProgress: Binding<Double> {
+        let engine = environment.playback.engine
+        return Binding(
+            get: { engine.maxOffset > 0 ? engine.offset / engine.maxOffset : 0 },
+            set: { engine.seek(toProgress: $0) }
+        )
     }
 
     private var transport: some View {
