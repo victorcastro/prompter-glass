@@ -34,7 +34,7 @@ struct HeroGlass: View {
             switch phase {
             case let .active(location):
                 let normalized = Double((location.x - imageWidth / 2) / (imageWidth / 2))
-                hoverTilt = max(-1, min(1, normalized)) * 6
+                hoverTilt = normalized.clamped(to: -1 ... 1) * 6
             case .ended:
                 hoverTilt = 0
             }
