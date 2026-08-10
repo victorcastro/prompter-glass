@@ -41,7 +41,7 @@ Out of scope for now: export, cloud sync, iOS/iPadOS, remote control, camera cap
 
 ## Requirements
 
-- macOS 26.5 or later (current deployment target)
+- macOS 26.0 or later (current deployment target)
 - Xcode with the macOS 26 SDK
 - Swift 5
 
@@ -58,6 +58,10 @@ In Xcode: select the `PrompterGlass` scheme and hit Run (`⌘R`).
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md).
+
+## Privacy
+
+See the [Privacy Policy](https://victorcastro.github.io/prompter-glass/privacy.html) ([source](docs/privacy.html)).
 
 ## Contributing
 
