@@ -7,6 +7,7 @@ struct PrompterSectionView: View {
 
     @State private var microphones: [AudioInputDevice] = []
     @State private var isShowingSettings = false
+    @State private var heroPulse = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -56,12 +57,8 @@ struct PrompterSectionView: View {
     }
 
     private var heroPanelGraphic: some View {
-        Image("HeroPanel")
-            .resizable()
-            .scaledToFit()
-            .frame(width: 320)
-            .rotation3DEffect(.degrees(10), axis: (x: 0.35, y: -1, z: 0.15))
-            .shadow(color: .black.opacity(0.45), radius: 30, y: 18)
+        HeroGlass(accent: AppSection.prompter.mood.glow, pulse: heroPulse)
+            .frame(width: 380, height: 340)
     }
 
     private var featureRows: some View {
@@ -252,6 +249,7 @@ struct PrompterSectionView: View {
                 isEnabled: playback.hasContent,
                 accessibilityIdentifier: playback.isPlaying ? ControlIdentifier.pause : ControlIdentifier.play
             ) {
+                heroPulse += 1
                 environment.toggleRolling()
             }
             HStack {
