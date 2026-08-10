@@ -89,6 +89,11 @@ struct OverlayView: View {
                         color: preferences.recognitionColor.color.opacity(0.6),
                         radius: 22
                     )
+                scriptText(saidLayerText)
+                    .shadow(
+                        color: preferences.recognitionColor.color.opacity(0.35),
+                        radius: 8
+                    )
                 scriptText(baseLayerText)
                     .shadow(color: .black.opacity(0.5), radius: 2, y: 1)
             }
@@ -134,6 +139,20 @@ struct OverlayView: View {
         said.foregroundColor = preferences.recognitionColor.color
         var upcoming = AttributedString(String(text[bounds.spokenEnd...]))
         upcoming.foregroundColor = preferences.textColor.color
+        return said + upcoming
+    }
+
+    private var saidLayerText: AttributedString {
+        let text = activeScript.text
+        guard let bounds = textStateBounds else {
+            var hidden = AttributedString(text)
+            hidden.foregroundColor = .clear
+            return hidden
+        }
+        var said = AttributedString(String(text[..<bounds.spokenEnd]))
+        said.foregroundColor = preferences.recognitionColor.color
+        var upcoming = AttributedString(String(text[bounds.spokenEnd...]))
+        upcoming.foregroundColor = .clear
         return said + upcoming
     }
 
