@@ -56,36 +56,12 @@ struct PrompterSectionView: View {
     }
 
     private var heroPanelGraphic: some View {
-        ZStack(alignment: .leading) {
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [Color.white.opacity(0.30), Color.white.opacity(0.08)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .fill(
-                    RadialGradient(
-                        colors: [Theme.Palette.accentIris.opacity(0.28), .clear],
-                        center: UnitPoint(x: 0.75, y: 0.85),
-                        startRadius: 0,
-                        endRadius: 220
-                    )
-                )
-            RoundedRectangle(cornerRadius: 32, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.35), lineWidth: 1)
-            VStack(alignment: .leading, spacing: 13) {
-                Capsule().fill(Color.white.opacity(0.9)).frame(width: 180, height: 13)
-                Capsule().fill(Color.white.opacity(0.75)).frame(width: 200, height: 13)
-                Capsule().fill(Color.white.opacity(0.55)).frame(width: 130, height: 13)
-            }
-            .padding(.leading, 40)
-        }
-        .frame(width: 300, height: 225)
-        .rotation3DEffect(.degrees(10), axis: (x: 0.35, y: -1, z: 0.15))
-        .shadow(color: .black.opacity(0.45), radius: 30, y: 18)
+        Image("HeroPanel")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 320)
+            .rotation3DEffect(.degrees(10), axis: (x: 0.35, y: -1, z: 0.15))
+            .shadow(color: .black.opacity(0.45), radius: 30, y: 18)
     }
 
     private var featureRows: some View {
