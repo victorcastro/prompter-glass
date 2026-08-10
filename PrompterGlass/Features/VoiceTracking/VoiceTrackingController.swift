@@ -1,0 +1,173 @@
+import Foundation
+import Observation
+
+@MainActor
+protocol VoiceTranscribing: AnyObject {
+    func start(onUpdate: @escaping @MainActor (VoiceTranscriptionSession.Update) -> Void) async throws
+    func stop()
+}
+
+extension VoiceTranscriptionSession: VoiceTranscribing {}
+
+struct MicrophonePermissionClient {
+    var status: () -> MicrophonePermission.Status
+    var request: () async -> Bool
+
+    static let live = MicrophonePermissionClient(
+        status: { MicrophonePermission.status },
+        request: { await MicrophonePermission.request() }
+    )
+}
+
+@MainActor
+@Observable
+final class VoiceTrackingController {
+    enum State: Equatable {
+        case idle
+        case requestingPermission
+        case preparing
+        case listening
+        case denied
+        case unavailable
+    }
+
+    private(set) var state: State = .idle
+    private(set) var highlightedUTF16Length = 0
+
+    @ObservationIgnored
+    private var scriptText = ""
+
+    @ObservationIgnored
+    private var aligner = ScriptAligner(tokens: [])
+
+    @ObservationIgnored
+    private var volatileWordCount = 0
+
+    @ObservationIgnored
+    private var session: VoiceTranscribing?
+
+    @ObservationIgnored
+    private var startTask: Task<Void, Never>?
+
+    @ObservationIgnored
+    private let playback: ScrollPlaybackController
+
+    @ObservationIgnored
+    private let permission: MicrophonePermissionClient
+
+    @ObservationIgnored
+    private let makeSession: @MainActor () -> VoiceTranscribing
+
+    init(
+        playback: ScrollPlaybackController,
+        permission: MicrophonePermissionClient,
+        makeSession: @escaping @MainActor () -> VoiceTranscribing
+    ) {
+        self.playback = playback
+        self.permission = permission
+        self.makeSession = makeSession
+    }
+
+    var isActive: Bool {
+        switch state {
+        case .requestingPermission, .preparing, .listening:
+            true
+        case .idle, .denied, .unavailable:
+            false
+        }
+    }
+
+    func setScript(_ text: String) {
+        guard text != scriptText else { return }
+        scriptText = text
+        aligner = ScriptAligner(tokens: ScriptTokenizer.tokenize(text))
+        volatileWordCount = 0
+        highlightedUTF16Length = 0
+        if isActive {
+            stopListening()
+        }
+    }
+
+    func setEnabled(_ enabled: Bool) {
+        if enabled {
+            guard !isActive else { return }
+            startTask = Task { await begin() }
+        } else {
+            startTask?.cancel()
+            startTask = nil
+            stopListening()
+        }
+    }
+
+    func waitUntilSettled() async {
+        await startTask?.value
+    }
+
+    private func begin() async {
+        switch permission.status() {
+        case .denied:
+            state = .denied
+            return
+        case .undetermined:
+            state = .requestingPermission
+            guard await permission.request() else {
+                state = .denied
+                return
+            }
+        case .granted:
+            break
+        }
+
+        state = .preparing
+        NSLog("PrompterGlass: voice tracking preparing (mic permission ok)")
+        let session = makeSession()
+        do {
+            try await session.start { [weak self] update in
+                self?.handle(update)
+            }
+            self.session = session
+            playback.startVoiceFollowing()
+            state = .listening
+            NSLog("PrompterGlass: voice tracking listening")
+        } catch {
+            NSLog("PrompterGlass: voice tracking failed to start (%@)", String(describing: error))
+            session.stop()
+            state = .unavailable
+        }
+    }
+
+    private func stopListening() {
+        session?.stop()
+        session = nil
+        if state == .listening {
+            playback.stopVoiceFollowing()
+        }
+        state = .idle
+    }
+
+    private func handle(_ update: VoiceTranscriptionSession.Update) {
+        let words = update.text.split(whereSeparator: \.isWhitespace).map(String.init)
+        let stableCount = update.isFinal ? words.count : max(words.count - 1, 0)
+        guard stableCount > volatileWordCount else {
+            if update.isFinal { volatileWordCount = 0 }
+            return
+        }
+        let fresh = Array(words[volatileWordCount ..< stableCount])
+        volatileWordCount = update.isFinal ? 0 : stableCount
+        guard !fresh.isEmpty else { return }
+
+        aligner.ingest(fresh)
+        NSLog(
+            "PrompterGlass: aligner +%d words -> %d/%d confirmed",
+            fresh.count,
+            aligner.confirmedCount,
+            aligner.totalCount
+        )
+        if let end = aligner.confirmedEndIndex {
+            highlightedUTF16Length = scriptText.utf16.distance(from: scriptText.startIndex, to: end)
+        } else {
+            highlightedUTF16Length = 0
+        }
+        playback.updateVoiceProgress(aligner.progress)
+    }
+}

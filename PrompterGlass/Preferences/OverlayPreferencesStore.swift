@@ -13,7 +13,7 @@ final class OverlayPreferencesStore {
     enum Defaults {
         static let fontSize: Double = 32
         static let scrollSpeed: Double = 60
-        static let backgroundOpacity: Double = 0.55
+        static let backgroundOpacity: Double = 0.80
         static let textColor = RGBAColor.white
     }
 

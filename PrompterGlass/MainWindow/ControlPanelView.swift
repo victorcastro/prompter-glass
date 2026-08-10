@@ -56,6 +56,8 @@ struct ControlPanelView: View {
         @Bindable var overlay = environment.overlay
 
         return HStack(spacing: 12) {
+            voiceControls
+
             Toggle("Overlay", isOn: overlayVisibility)
                 .accessibilityIdentifier(Identifier.overlayToggle)
 
@@ -65,6 +67,41 @@ struct ControlPanelView: View {
         }
         .toggleStyle(.switch)
         .controlSize(.small)
+    }
+
+    private var voiceControls: some View {
+        HStack(spacing: 6) {
+            Toggle("Voice", isOn: voiceTrackingEnabled)
+                .accessibilityIdentifier(Identifier.voiceToggle)
+                .disabled(!playback.hasContent)
+                .help("Follow your voice through the script and highlight what you have read")
+
+            voiceStatus
+        }
+    }
+
+    @ViewBuilder
+    private var voiceStatus: some View {
+        switch environment.voiceTracking.state {
+        case .idle, .listening:
+            EmptyView()
+        case .requestingPermission, .preparing:
+            ProgressView()
+                .controlSize(.small)
+                .accessibilityIdentifier(Identifier.voicePreparing)
+        case .denied:
+            Button("Mic access denied — open Settings") {
+                MicrophonePermission.openSystemSettings()
+            }
+            .buttonStyle(.link)
+            .font(.caption)
+            .accessibilityIdentifier(Identifier.voiceDenied)
+        case .unavailable:
+            Text("Voice tracking unavailable for this language")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .accessibilityIdentifier(Identifier.voiceUnavailable)
+        }
     }
 
     private var settings: some View {
@@ -129,6 +166,13 @@ struct ControlPanelView: View {
         .monospacedDigit()
     }
 
+    private var voiceTrackingEnabled: Binding<Bool> {
+        Binding(
+            get: { environment.voiceTracking.isActive },
+            set: { environment.voiceTracking.setEnabled($0) }
+        )
+    }
+
     private var overlayVisibility: Binding<Bool> {
         Binding(
             get: { environment.overlay.isVisible },
@@ -151,6 +195,10 @@ extension ControlPanelView {
         static let stop = "controls.stop"
         static let overlayToggle = "controls.overlayToggle"
         static let clickThroughToggle = "controls.clickThroughToggle"
+        static let voiceToggle = "controls.voiceToggle"
+        static let voicePreparing = "controls.voicePreparing"
+        static let voiceDenied = "controls.voiceDenied"
+        static let voiceUnavailable = "controls.voiceUnavailable"
         static let speedSlider = "controls.speed"
         static let fontSizeSlider = "controls.fontSize"
         static let opacitySlider = "controls.opacity"
