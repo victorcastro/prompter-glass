@@ -1,3 +1,7 @@
+---
+title: Terms & Conditions
+---
+
 **Terms & Conditions**  
 
 These terms and conditions apply to the Prompter Glass app for mobile devices, together with any related services operated by Victor Castro Contreras (collectively, the "Application"). Victor Castro Contreras is hereby referred to as the "Service Provider".

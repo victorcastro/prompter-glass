@@ -14,6 +14,7 @@ A native macOS teleprompter with a transparent floating window that stays on top
 
 - [Source code on GitHub](https://github.com/victorcastro/prompter-glass)
 - [Privacy Policy](privacy)
+- [Terms & Conditions](terms)
 - [Changelog](https://github.com/victorcastro/prompter-glass/blob/main/CHANGELOG.md)
 - [Report an issue](https://github.com/victorcastro/prompter-glass/issues)
 
