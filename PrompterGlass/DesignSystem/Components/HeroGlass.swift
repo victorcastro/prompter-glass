@@ -51,13 +51,8 @@ struct HeroGlass: View {
     private func hero(time: TimeInterval?) -> some View {
         ZStack {
             halo(breath: breathScale(time))
-            panel(floatY: floatOffset(time), microYaw: microYaw(time), time: time)
+            panel(microYaw: microYaw(time), time: time)
         }
-    }
-
-    private func floatOffset(_ time: TimeInterval?) -> Double {
-        guard let time else { return 0 }
-        return 8 * sin(2 * Double.pi * time / Cycle.float)
     }
 
     private func microYaw(_ time: TimeInterval?) -> Double {
@@ -86,7 +81,7 @@ struct HeroGlass: View {
             .allowsHitTesting(false)
     }
 
-    private func panel(floatY: Double, microYaw: Double, time: TimeInterval?) -> some View {
+    private func panel(microYaw: Double, time: TimeInterval?) -> some View {
         panelImage
             .overlay(
                 shine(time: time)
@@ -100,8 +95,7 @@ struct HeroGlass: View {
             )
             .rotation3DEffect(.degrees(-6 - 6 * pulseAmount), axis: (x: 1, y: 0, z: 0))
             .rotationEffect(.degrees(-8))
-            .offset(y: floatY)
-            .shadow(color: .black.opacity(0.45), radius: 30 + floatY, y: 24 - floatY)
+            .shadow(color: .black.opacity(0.45), radius: 30, y: 24)
     }
 
     private var panelImage: some View {
