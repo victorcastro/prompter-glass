@@ -3,36 +3,22 @@ import SwiftUI
 struct ScriptLibraryView: View {
     let scripts: [Script]
     @Binding var selection: Script.ID?
+    @Binding var editingScriptID: Script.ID?
     let onCreate: () -> Void
     let onDelete: (Script) -> Void
+
+    @Environment(AppEnvironment.self) private var environment
 
     @State private var scriptPendingDeletion: Script?
 
     var body: some View {
         Group {
-            if scripts.isEmpty {
+            if let editingScript {
+                editor(for: editingScript)
+            } else if scripts.isEmpty {
                 emptyState
             } else {
-                list
-            }
-        }
-        .toolbar {
-            ToolbarItem {
-                Button(action: onCreate) {
-                    Label("New Script", systemImage: "plus")
-                }
-                .accessibilityIdentifier(Identifier.create)
-                .help("Create a new script")
-            }
-            ToolbarItem {
-                Button(role: .destructive) {
-                    scriptPendingDeletion = selectedScript
-                } label: {
-                    Label("Delete Script", systemImage: "trash")
-                }
-                .accessibilityIdentifier(Identifier.delete)
-                .help("Delete the selected script")
-                .disabled(selectedScript == nil)
+                grid
             }
         }
         .confirmationDialog(
@@ -57,49 +43,88 @@ struct ScriptLibraryView: View {
         }
     }
 
-    private var list: some View {
-        List(selection: $selection) {
-            ForEach(scripts) { script in
-                row(for: script)
-                    .tag(script.id)
-                    .contextMenu {
-                        Button("Delete", role: .destructive) {
-                            scriptPendingDeletion = script
-                        }
+    private var grid: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                header
+                LazyVGrid(
+                    columns: [GridItem(.adaptive(minimum: 240, maximum: 340), spacing: 16)],
+                    alignment: .leading,
+                    spacing: 16
+                ) {
+                    ForEach(scripts) { script in
+                        ScriptCardView(
+                            script: script,
+                            isActive: script.id == selection,
+                            onSelect: { selection = script.id },
+                            onOpen: { open(script) },
+                            onDelete: { scriptPendingDeletion = script }
+                        )
                     }
+                }
+                .accessibilityIdentifier(Identifier.list)
             }
+            .padding(28)
         }
-        .accessibilityIdentifier(Identifier.list)
     }
 
-    private func row(for script: Script) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(script.title)
-                .font(.body)
-                .lineLimit(1)
-                .accessibilityIdentifier(Identifier.rowTitle)
-            Text(script.updatedAt, format: .relative(presentation: .named))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .accessibilityIdentifier(Identifier.rowDate)
+    private var header: some View {
+        HStack(alignment: .center) {
+            Text("Library")
+                .font(.system(size: 38, weight: .light))
+                .foregroundStyle(Theme.Palette.textPrimary)
+            Spacer()
+            Button(action: onCreate) {
+                Text("+ New script")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(Theme.Palette.textPrimary)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(Color.black.opacity(0.3))
+                    .clipShape(Capsule())
+                    .overlay(Capsule().strokeBorder(Theme.Glass.stroke, lineWidth: 1))
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier(Identifier.create)
+            .help("Create a new script")
         }
-        .padding(.vertical, 2)
+    }
+
+    private func editor(for script: Script) -> some View {
+        ScriptEditorView(
+            script: script,
+            onCommit: environment.refreshPlaybackAvailability,
+            onBack: { editingScriptID = nil },
+            onDelete: { scriptPendingDeletion = script }
+        )
+        .id(script.id)
     }
 
     private var emptyState: some View {
-        ContentUnavailableView {
-            Label("No scripts yet", systemImage: "text.badge.plus")
-        } description: {
+        VStack(spacing: 12) {
+            IconChip(systemImage: "text.badge.plus", style: .irisGradient, side: 44)
+            Text("No scripts yet")
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundStyle(Theme.Palette.textPrimary)
             Text("Write your first script and float it over any app.")
-        } actions: {
+                .font(.system(size: 12))
+                .foregroundStyle(Theme.Palette.textSecondary)
             Button("Create your first script", action: onCreate)
+                .buttonStyle(.borderedProminent)
+                .tint(Theme.Palette.accentIris)
                 .accessibilityIdentifier(Identifier.createFirst)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    private var selectedScript: Script? {
-        guard let selection else { return nil }
-        return scripts.first { $0.id == selection }
+    private var editingScript: Script? {
+        guard let editingScriptID else { return nil }
+        return scripts.first { $0.id == editingScriptID }
+    }
+
+    private func open(_ script: Script) {
+        selection = script.id
+        editingScriptID = script.id
     }
 
     private var deletionBinding: Binding<Bool> {
@@ -124,5 +149,7 @@ extension ScriptLibraryView {
         static let cancelDelete = "library.cancelDelete"
         static let rowTitle = "library.rowTitle"
         static let rowDate = "library.rowDate"
+        static let back = "library.back"
+        static let select = "library.select"
     }
 }

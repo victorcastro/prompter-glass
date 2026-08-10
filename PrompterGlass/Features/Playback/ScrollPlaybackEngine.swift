@@ -10,7 +10,15 @@ final class ScrollPlaybackEngine {
         case paused
     }
 
-    private(set) var state: State = .stopped
+    private(set) var state: State = .stopped {
+        didSet {
+            guard oldValue != state else { return }
+            onStateChange?(oldValue, state)
+        }
+    }
+
+    @ObservationIgnored
+    var onStateChange: ((State, State) -> Void)?
 
     private(set) var offset: Double = 0
 
@@ -92,6 +100,12 @@ final class ScrollPlaybackEngine {
         voiceTargetOffset = anchor.clamped(to: 0 ... max(0, maxOffset))
     }
 
+    func seek(toProgress progress: Double) {
+        guard hasContent, progress.isFinite else { return }
+        offset = progress.clamped(to: 0 ... 1) * maxOffset
+        didReachEnd = false
+    }
+
     func advance(by deltaTime: TimeInterval) {
         guard state == .playing, deltaTime > 0 else { return }
         if let target = voiceTargetOffset {
@@ -114,8 +128,8 @@ final class ScrollPlaybackEngine {
 
     private func finishAtEnd(limit: Double) {
         offset = limit
-        state = .stopped
         didReachEnd = true
+        state = .stopped
     }
 
     func updateContentHeight(_ newValue: Double) {

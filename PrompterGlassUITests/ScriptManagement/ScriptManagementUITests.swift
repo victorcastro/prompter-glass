@@ -6,6 +6,7 @@ final class ScriptManagementUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication.launchForTesting()
+        app.openSection(AccessibilityIdentifier.Sidebar.library)
     }
 
     override func tearDownWithError() throws {
@@ -35,9 +36,10 @@ final class ScriptManagementUITests: XCTestCase {
         XCTAssertTrue(titleField.waitForExistence(timeout: 5))
 
         setTitle("Launch Video")
+        returnToGrid()
 
         let row = libraryRow(titled: "Launch Video")
-        XCTAssertTrue(row.waitForExistence(timeout: 5), "The library row should show the edited title")
+        XCTAssertTrue(row.waitForExistence(timeout: 5), "The library card should show the edited title")
     }
 
     func testEditingTheBodyPersistsWhileSwitchingScripts() {
@@ -49,6 +51,7 @@ final class ScriptManagementUITests: XCTestCase {
         createScript()
         XCTAssertTrue(titleField.waitForExistence(timeout: 5))
         setTitle("Second")
+        returnToGrid()
 
         libraryRow(titled: "First").click()
 
@@ -65,16 +68,18 @@ final class ScriptManagementUITests: XCTestCase {
         createScript()
         XCTAssertTrue(titleField.waitForExistence(timeout: 5))
         setTitle("Newer")
+        returnToGrid()
 
         let newer = libraryRow(titled: "Newer")
         let older = libraryRow(titled: "Older")
         XCTAssertTrue(newer.waitForExistence(timeout: 5))
         XCTAssertTrue(older.waitForExistence(timeout: 5))
 
-        XCTAssertLessThan(
-            newer.frame.minY,
-            older.frame.minY,
-            "The most recently edited script should sit above the older one"
+        let newerComesFirst = newer.frame.minY < older.frame.minY - 1
+            || (abs(newer.frame.minY - older.frame.minY) <= 1 && newer.frame.minX < older.frame.minX)
+        XCTAssertTrue(
+            newerComesFirst,
+            "The most recently edited script should come before the older one in the grid"
         )
     }
 
@@ -101,6 +106,7 @@ final class ScriptManagementUITests: XCTestCase {
         let cancel = app.buttons[AccessibilityIdentifier.Library.cancelDelete]
         XCTAssertTrue(cancel.waitForExistence(timeout: 5))
         cancel.click()
+        returnToGrid()
 
         XCTAssertTrue(row.waitForExistence(timeout: 5), "Cancelling must leave the script in place")
     }
@@ -116,9 +122,10 @@ private extension ScriptManagementUITests {
     }
 
     func createScript() {
-        let toolbarButton = app.buttons[AccessibilityIdentifier.Library.create]
-        if toolbarButton.waitForExistence(timeout: 3) {
-            toolbarButton.click()
+        returnToGrid()
+        let createButton = app.buttons[AccessibilityIdentifier.Library.create]
+        if createButton.waitForExistence(timeout: 3) {
+            createButton.click()
         } else {
             app.buttons[AccessibilityIdentifier.Library.createFirst].click()
         }
@@ -129,10 +136,18 @@ private extension ScriptManagementUITests {
         createScript()
         XCTAssertTrue(titleField.waitForExistence(timeout: 5))
         setTitle(title)
+        returnToGrid()
 
         let row = libraryRow(titled: title)
         XCTAssertTrue(row.waitForExistence(timeout: 5))
         return row
+    }
+
+    func returnToGrid() {
+        let back = app.buttons[AccessibilityIdentifier.Library.back]
+        if back.waitForExistence(timeout: 2) {
+            back.click()
+        }
     }
 
     func libraryRow(titled title: String) -> XCUIElement {

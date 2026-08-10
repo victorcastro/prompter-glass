@@ -14,12 +14,13 @@ final class VoiceTrackingUITests: XCTestCase {
     }
 
     func testVoiceToggleIsVisibleAndDisabledWithoutAScript() {
-        let toggle = app.checkBoxes[AccessibilityIdentifier.Controls.voiceToggle]
+        let toggle = app.control(AccessibilityIdentifier.Controls.voiceToggle)
         XCTAssertTrue(toggle.waitForExistence(timeout: 5), "The voice toggle should be in the control panel")
         XCTAssertFalse(toggle.isEnabled, "Voice tracking needs a script with content")
     }
 
     func testVoiceToggleEnablesOnceAScriptHasContent() {
+        app.openSection(AccessibilityIdentifier.Sidebar.library)
         let create = app.buttons[AccessibilityIdentifier.Library.createFirst]
         XCTAssertTrue(create.waitForExistence(timeout: 5))
         create.click()
@@ -29,7 +30,8 @@ final class VoiceTrackingUITests: XCTestCase {
         body.click()
         body.typeText("Hello from the teleprompter.")
 
-        let toggle = app.checkBoxes[AccessibilityIdentifier.Controls.voiceToggle]
+        app.openSection(AccessibilityIdentifier.Sidebar.prompter)
+        let toggle = app.control(AccessibilityIdentifier.Controls.voiceToggle)
         XCTAssertTrue(toggle.waitForExistence(timeout: 5))
         XCTAssertTrue(
             toggle.waitForEnabled(timeout: 5),
