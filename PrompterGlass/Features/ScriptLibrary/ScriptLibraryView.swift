@@ -56,6 +56,7 @@ struct ScriptLibraryView: View {
                         ScriptCardView(
                             script: script,
                             isActive: script.id == selection,
+                            onSelect: { selection = script.id },
                             onOpen: { open(script) },
                             onDelete: { scriptPendingDeletion = script }
                         )
@@ -149,5 +150,6 @@ extension ScriptLibraryView {
         static let rowTitle = "library.rowTitle"
         static let rowDate = "library.rowDate"
         static let back = "library.back"
+        static let select = "library.select"
     }
 }

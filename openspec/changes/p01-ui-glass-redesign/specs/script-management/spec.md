@@ -2,9 +2,33 @@
 
 ## MODIFIED Requirements
 
+### Requirement: Select the active script
+
+The app SHALL let the user designate one script as the active script, which is the script rendered in the overlay window, and SHALL restore the active selection on the next launch. Each library card SHALL expose a selector control that marks its script as active without opening the editor, and the selector SHALL visually indicate which script is currently active.
+
+#### Scenario: Selecting an active script
+
+- **WHEN** the user selects a script and sends it to the overlay
+- **THEN** the overlay renders that script's body from the beginning
+
+#### Scenario: Selecting from a card's selector
+
+- **WHEN** the user clicks the selector on a script card
+- **THEN** that script becomes the active script, its selector shows the active state, and the editor does not open
+
+#### Scenario: Active selection restored on launch
+
+- **WHEN** the user quits with a script active and relaunches the app
+- **THEN** the same script is active again
+
+#### Scenario: Previously active script no longer exists
+
+- **WHEN** the app launches and the previously active script has been deleted
+- **THEN** no script is active and the overlay shows its empty state
+
 ### Requirement: List scripts
 
-The app SHALL present all persisted scripts as a grid of glass cards, ordered by last-modified date with the most recently modified first. Each card SHALL show an icon chip, the script's title, a relative last-modified timestamp, a body preview of up to two lines, and derived metadata: word count and estimated read time.
+The app SHALL present all persisted scripts as a grid of glass cards, ordered by last-modified date with the most recently modified first. Each card SHALL show an active-script selector, the script's title, a relative last-modified timestamp, a body preview of up to two lines, and derived metadata: word count and estimated read time.
 
 #### Scenario: Listing existing scripts
 

@@ -3,6 +3,7 @@ import SwiftUI
 struct ScriptCardView: View {
     let script: Script
     let isActive: Bool
+    let onSelect: () -> Void
     let onOpen: () -> Void
     let onDelete: () -> Void
 
@@ -10,7 +11,7 @@ struct ScriptCardView: View {
         GlassCard(isHighlighted: isActive) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    IconChip(systemImage: "doc.text", style: .irisGradient)
+                    selector
                     Spacer()
                     Text(script.updatedAt, format: .relative(presentation: .named))
                         .font(.system(size: 11))
@@ -39,5 +40,34 @@ struct ScriptCardView: View {
         .contextMenu {
             Button("Delete", role: .destructive, action: onDelete)
         }
+    }
+
+    private var selector: some View {
+        Button(action: onSelect) {
+            ZStack {
+                if isActive {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [Theme.Palette.accentIrisSoft, Theme.Palette.accentIris],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(.white)
+                } else {
+                    Circle()
+                        .strokeBorder(Color.white.opacity(0.35), lineWidth: 1.5)
+                        .background(Circle().fill(Color.white.opacity(0.06)))
+                }
+            }
+            .frame(width: 26, height: 26)
+            .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier(ScriptLibraryView.Identifier.select)
+        .help(isActive ? "Active script" : "Send this script to the prompter")
     }
 }
