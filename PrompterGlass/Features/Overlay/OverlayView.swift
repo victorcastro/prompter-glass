@@ -22,9 +22,6 @@ struct OverlayView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: OverlayView.cornerRadius, style: .continuous))
         .accessibilityIdentifier(OverlayView.accessibilityIdentifier)
-        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
-            playback.engine.updateViewportHeight(Double(height))
-        }
     }
 
     @ViewBuilder
@@ -108,6 +105,9 @@ struct OverlayView: View {
         }
         .scrollDisabled(true)
         .scrollIndicators(.hidden)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
+            playback.engine.updateViewportHeight(Double(height))
+        }
     }
 
     private func scriptText(_ attributed: AttributedString) -> some View {
