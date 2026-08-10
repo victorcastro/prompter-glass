@@ -53,6 +53,11 @@ While voice tracking is active, the overlay SHALL scroll automatically so the cu
 - **WHEN** the user disables voice tracking after part of the script has been read
 - **THEN** the overlay stops following the voice and the manual playback controls behave as in fixed-speed mode
 
+#### Scenario: Stop resets the reading session
+
+- **WHEN** the user presses Stop while voice tracking is active
+- **THEN** voice tracking turns off, the yellow highlight is cleared, and the script returns to its first line
+
 ### Requirement: Microphone permission is requested and denial is surfaced
 
 The first activation SHALL request microphone and speech-recognition permission. If permission is denied, the app SHALL show a clear non-listening state with a way to open System Settings, and SHALL NOT capture audio.

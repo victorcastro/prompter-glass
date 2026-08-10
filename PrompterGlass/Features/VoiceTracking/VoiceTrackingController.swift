@@ -88,6 +88,13 @@ final class VoiceTrackingController {
         }
     }
 
+    func stopAndReset() {
+        setEnabled(false)
+        aligner.reset()
+        volatileWordCount = 0
+        highlightedUTF16Length = 0
+    }
+
     func setEnabled(_ enabled: Bool) {
         if enabled {
             guard !isActive else { return }

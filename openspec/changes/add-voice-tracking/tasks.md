@@ -42,7 +42,11 @@
 - [x] 7.2 Privacy policy: add Microphone section (on-device, never stored or transmitted) in docs/privacy.html and PRIVACY.md summary
 - [x] 7.3 README: add voice tracking to Features
 
-## 8. Verification
+## 8. Stop semantics
+
+- [x] 8.0 Stop turns voice tracking off, clears the yellow highlight, and rewinds to the top (controller stopAndReset + AppEnvironment.stopPlayback wired to the Stop button)
+
+## 9. Verification
 
 - [x] 8.1 Full unit test suite green locally (UI tests excluded per repo practice unless requested)
 - [x] 8.2 SwiftLint --strict and SwiftFormat --lint clean

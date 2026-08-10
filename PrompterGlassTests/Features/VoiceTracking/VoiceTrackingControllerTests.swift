@@ -158,6 +158,22 @@ struct VoiceTrackingControllerTests {
         #expect(harness.playback.engine.isVoiceDriven == false)
     }
 
+    @Test("Stop clears the highlight and turns voice tracking off")
+    func stopClearsHighlightAndDisables() async {
+        let harness = makeHarness(script: "hello world how are you")
+        harness.controller.setEnabled(true)
+        await harness.controller.waitUntilSettled()
+        harness.session.emit("hello world", isFinal: true)
+        #expect(harness.controller.highlightedUTF16Length > 0)
+
+        harness.controller.stopAndReset()
+
+        #expect(harness.controller.state == .idle)
+        #expect(harness.controller.highlightedUTF16Length == 0)
+        #expect(harness.session.stopped)
+        #expect(harness.playback.engine.isVoiceDriven == false)
+    }
+
     @Test("Changing the script resets the highlight")
     func scriptChangeResetsHighlight() async {
         let harness = makeHarness(script: "alpha beta gamma")

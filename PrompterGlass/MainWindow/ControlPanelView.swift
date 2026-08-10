@@ -41,12 +41,12 @@ struct ControlPanelView: View {
             .disabled(!playback.isPlaying)
 
             Button {
-                playback.stop()
+                environment.stopPlayback()
             } label: {
                 Label("Stop", systemImage: "stop.fill")
             }
             .accessibilityIdentifier(Identifier.stop)
-            .disabled(!playback.canStop)
+            .disabled(!playback.canStop && !environment.voiceTracking.isActive)
         }
         .labelStyle(.iconOnly)
         .buttonStyle(.bordered)

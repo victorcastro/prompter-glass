@@ -87,6 +87,11 @@ final class AppEnvironment {
         voiceTracking.setScript(activeScript.text)
     }
 
+    func stopPlayback() {
+        voiceTracking.stopAndReset()
+        playback.stop()
+    }
+
     func setOverlayVisible(_ visible: Bool) {
         guard visible != overlay.isVisible else { return }
         overlay.setVisible(visible)
