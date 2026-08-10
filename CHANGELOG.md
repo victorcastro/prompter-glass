@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-08-11
+
+### Added
+
+- **Voice tracking.** Turn on the new Voice toggle and PrompterGlass follows your voice through the script: speech is transcribed entirely on your Mac (no network involved), the words you have already read are highlighted in yellow, and the overlay scrolls automatically to keep your reading position in view. Manual playback is untouched when the toggle is off.
+- Clear permission states: the first activation asks for microphone access; if it is denied, the control panel says so and links to System Settings.
+
+### Changed
+
+- The default overlay background opacity is now 80% (was 55%); a value you had already chosen is kept. The default text color remains white.
+
 ## [1.0.0] - 2026-08-10
 
 First usable version. Build it from source in Xcode; there is no signed binary or installer yet.
@@ -40,4 +51,5 @@ First usable version. Build it from source in Xcode; there is no signed binary o
 - One overlay on one display; no multi-monitor mirroring.
 - Plain text only — no rich text, Markdown or imported documents.
 
+[1.1.0]: https://github.com/VictorCastroDev/PrompterGlass/releases/tag/v1.1.0
 [1.0.0]: https://github.com/VictorCastroDev/PrompterGlass/releases/tag/v1.0.0

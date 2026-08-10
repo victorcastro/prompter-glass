@@ -3,6 +3,8 @@ import SwiftUI
 struct ControlPanelView: View {
     @Environment(AppEnvironment.self) private var environment
 
+    @State private var microphones: [AudioInputDevice] = []
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 12) {
@@ -16,6 +18,7 @@ struct ControlPanelView: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
         .background(.bar)
+        .task { microphones = AudioInputDevices.available() }
     }
 
     private var playback: ScrollPlaybackController {
@@ -41,12 +44,12 @@ struct ControlPanelView: View {
             .disabled(!playback.isPlaying)
 
             Button {
-                playback.stop()
+                environment.stopPlayback()
             } label: {
                 Label("Stop", systemImage: "stop.fill")
             }
             .accessibilityIdentifier(Identifier.stop)
-            .disabled(!playback.canStop)
+            .disabled(!playback.canStop && !environment.voiceTracking.isActive)
         }
         .labelStyle(.iconOnly)
         .buttonStyle(.bordered)
@@ -56,6 +59,8 @@ struct ControlPanelView: View {
         @Bindable var overlay = environment.overlay
 
         return HStack(spacing: 12) {
+            voiceControls
+
             Toggle("Overlay", isOn: overlayVisibility)
                 .accessibilityIdentifier(Identifier.overlayToggle)
 
@@ -65,6 +70,41 @@ struct ControlPanelView: View {
         }
         .toggleStyle(.switch)
         .controlSize(.small)
+    }
+
+    private var voiceControls: some View {
+        HStack(spacing: 6) {
+            Toggle("Voice", isOn: voiceTrackingEnabled)
+                .accessibilityIdentifier(Identifier.voiceToggle)
+                .disabled(!playback.hasContent)
+                .help("Follow your voice through the script and highlight what you have read")
+
+            voiceStatus
+        }
+    }
+
+    @ViewBuilder
+    private var voiceStatus: some View {
+        switch environment.voiceTracking.state {
+        case .idle, .listening:
+            EmptyView()
+        case .requestingPermission, .preparing:
+            ProgressView()
+                .controlSize(.small)
+                .accessibilityIdentifier(Identifier.voicePreparing)
+        case .denied:
+            Button("Mic access denied — open Settings") {
+                MicrophonePermission.openSystemSettings()
+            }
+            .buttonStyle(.link)
+            .font(.caption)
+            .accessibilityIdentifier(Identifier.voiceDenied)
+        case .unavailable:
+            Text("Voice tracking unavailable for this language")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .accessibilityIdentifier(Identifier.voiceUnavailable)
+        }
     }
 
     private var settings: some View {
@@ -101,6 +141,12 @@ struct ControlPanelView: View {
                 Color.clear.frame(width: 1, height: 1)
             }
             GridRow {
+                Text("Microphone")
+                microphonePicker
+                    .gridCellAnchor(.leading)
+                Color.clear.frame(width: 1, height: 1)
+            }
+            GridRow {
                 Text("Text color")
                 ColorPicker("Text color", selection: textColor, supportsOpacity: false)
                     .labelsHidden()
@@ -129,6 +175,33 @@ struct ControlPanelView: View {
         .monospacedDigit()
     }
 
+    private var microphonePicker: some View {
+        Picker("Microphone", selection: microphoneSelection) {
+            Text("System Default").tag(String?.none)
+            ForEach(microphones) { device in
+                Text(device.name).tag(String?.some(device.uid))
+            }
+        }
+        .labelsHidden()
+        .frame(maxWidth: 240)
+        .accessibilityIdentifier(Identifier.microphonePicker)
+        .help("Microphone used for voice tracking")
+    }
+
+    private var microphoneSelection: Binding<String?> {
+        Binding(
+            get: { environment.voiceTracking.microphoneUID },
+            set: { environment.selectMicrophone(uid: $0) }
+        )
+    }
+
+    private var voiceTrackingEnabled: Binding<Bool> {
+        Binding(
+            get: { environment.voiceTracking.isActive },
+            set: { environment.voiceTracking.setEnabled($0) }
+        )
+    }
+
     private var overlayVisibility: Binding<Bool> {
         Binding(
             get: { environment.overlay.isVisible },
@@ -151,6 +224,11 @@ extension ControlPanelView {
         static let stop = "controls.stop"
         static let overlayToggle = "controls.overlayToggle"
         static let clickThroughToggle = "controls.clickThroughToggle"
+        static let voiceToggle = "controls.voiceToggle"
+        static let voicePreparing = "controls.voicePreparing"
+        static let voiceDenied = "controls.voiceDenied"
+        static let voiceUnavailable = "controls.voiceUnavailable"
+        static let microphonePicker = "controls.microphonePicker"
         static let speedSlider = "controls.speed"
         static let fontSizeSlider = "controls.fontSize"
         static let opacitySlider = "controls.opacity"

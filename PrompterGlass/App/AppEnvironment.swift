@@ -8,6 +8,7 @@ final class AppEnvironment {
     let preferences: OverlayPreferencesStore
     let activeScript: ActiveScriptStore
     let playback: ScrollPlaybackController
+    let voiceTracking: VoiceTrackingController
     let overlay: OverlayPresenter
 
     @ObservationIgnored
@@ -19,11 +20,17 @@ final class AppEnvironment {
     init(preferences: OverlayPreferencesStore, notificationCenter: NotificationCenter = .default) {
         let activeScript = ActiveScriptStore(preferences: preferences)
         let playback = ScrollPlaybackController(preferences: preferences)
+        let voiceTracking = VoiceTrackingController(
+            playback: playback,
+            permission: .live,
+            makeSession: { VoiceTranscriptionSession() }
+        )
 
         self.preferences = preferences
         self.notificationCenter = notificationCenter
         self.activeScript = activeScript
         self.playback = playback
+        self.voiceTracking = voiceTracking
         overlay = OverlayPresenter(
             preferences: preferences,
             onDisplayViewChange: { [weak playback] view in playback?.displaySourceView = view },
@@ -32,11 +39,13 @@ final class AppEnvironment {
                     OverlayView(
                         activeScript: activeScript,
                         playback: playback,
+                        voiceTracking: voiceTracking,
                         preferences: preferences
                     )
                 )
             }
         )
+        voiceTracking.setMicrophone(uid: preferences.microphoneUID)
         terminationObserver = notificationCenter.addObserver(
             forName: NSApplication.willTerminateNotification,
             object: nil,
@@ -76,12 +85,24 @@ final class AppEnvironment {
 
     func refreshPlaybackAvailability() {
         playback.hasContent = activeScript.hasRenderableText
+        voiceTracking.setScript(activeScript.text)
+    }
+
+    func selectMicrophone(uid: String?) {
+        preferences.microphoneUID = uid
+        voiceTracking.setMicrophone(uid: uid)
+    }
+
+    func stopPlayback() {
+        voiceTracking.stopAndReset()
+        playback.stop()
     }
 
     func setOverlayVisible(_ visible: Bool) {
         guard visible != overlay.isVisible else { return }
         overlay.setVisible(visible)
         if !visible {
+            voiceTracking.setEnabled(false)
             playback.stop()
         }
     }

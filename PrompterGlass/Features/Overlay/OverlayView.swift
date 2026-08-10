@@ -3,6 +3,7 @@ import SwiftUI
 struct OverlayView: View {
     let activeScript: ActiveScriptStore
     let playback: ScrollPlaybackController
+    let voiceTracking: VoiceTrackingController
     let preferences: OverlayPreferencesStore
 
     var body: some View {
@@ -31,7 +32,7 @@ struct OverlayView: View {
 
     private var script: some View {
         ScrollView(.vertical) {
-            Text(activeScript.text)
+            Text(attributedScript)
                 .font(.system(size: preferences.fontSize, weight: .semibold, design: .rounded))
                 .foregroundStyle(preferences.textColor.color)
                 .lineSpacing(preferences.fontSize * 0.3)
@@ -46,6 +47,16 @@ struct OverlayView: View {
         }
         .scrollDisabled(true)
         .scrollIndicators(.hidden)
+    }
+
+    private var attributedScript: AttributedString {
+        let text = activeScript.text
+        let highlightLength = min(voiceTracking.highlightedUTF16Length, text.utf16.count)
+        guard highlightLength > 0 else { return AttributedString(text) }
+        let end = String.Index(utf16Offset: highlightLength, in: text)
+        var highlighted = AttributedString(String(text[..<end]))
+        highlighted.foregroundColor = .yellow
+        return highlighted + AttributedString(String(text[end...]))
     }
 
     private var emptyState: some View {
