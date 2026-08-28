@@ -31,8 +31,8 @@ final class AppEnvironment {
         sessionRecorder = SessionRecorder(clock: sessionClock)
         let voiceTracking = VoiceTrackingController(
             playback: playback,
-            permission: .live,
-            makeSession: { VoiceTranscriptionSession() }
+            permission: AppEnvironment.voicePermissionClient(),
+            makeSession: { AppEnvironment.makeVoiceSession() }
         )
 
         self.preferences = preferences
@@ -72,6 +72,24 @@ final class AppEnvironment {
         if let terminationObserver {
             notificationCenter.removeObserver(terminationObserver)
         }
+    }
+
+    private static func makeVoiceSession() -> VoiceTranscribing {
+        #if DEBUG
+            if UITestVoiceSession.isRequested {
+                return UITestVoiceSession()
+            }
+        #endif
+        return VoiceTranscriptionSession()
+    }
+
+    private static func voicePermissionClient() -> MicrophonePermissionClient {
+        #if DEBUG
+            if UITestVoiceSession.isRequested {
+                return MicrophonePermissionClient(status: { .granted }, request: { true })
+            }
+        #endif
+        return .live
     }
 
     func prepareForTermination() {

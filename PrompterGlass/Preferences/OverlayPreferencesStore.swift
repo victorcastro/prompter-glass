@@ -32,6 +32,7 @@ final class OverlayPreferencesStore {
         static let recognitionColor = "overlay.recognitionColor"
         static let lastOpenedScriptID = "overlay.lastOpenedScriptID"
         static let microphoneUID = "voice.microphoneUID"
+        static let didSeedSampleScript = "library.didSeedSampleScript"
     }
 
     @ObservationIgnored
@@ -134,6 +135,19 @@ final class OverlayPreferencesStore {
             withMutation(keyPath: \.recognitionColor) {
                 guard let data = try? JSONEncoder().encode(newValue) else { return }
                 defaults.set(data, forKey: Key.recognitionColor)
+            }
+        }
+    }
+
+    /// Set once the sample script has been offered, so deleting it is permanent.
+    var didSeedSampleScript: Bool {
+        get {
+            access(keyPath: \.didSeedSampleScript)
+            return defaults.bool(forKey: Key.didSeedSampleScript)
+        }
+        set {
+            withMutation(keyPath: \.didSeedSampleScript) {
+                defaults.set(newValue, forKey: Key.didSeedSampleScript)
             }
         }
     }

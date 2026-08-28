@@ -83,6 +83,12 @@ h2 {
   letter-spacing: -0.01em;
 }
 
+h3 {
+  margin-top: 1.8rem;
+  margin-bottom: 0.4rem;
+  font-size: 1.08rem;
+}
+
 a {
   color: var(--accent);
 }

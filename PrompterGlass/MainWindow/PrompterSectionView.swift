@@ -70,7 +70,7 @@ struct PrompterSectionView: View {
                 detail: voiceDetail,
                 toggle: voiceTrackingEnabled,
                 identifier: ControlIdentifier.voiceToggle,
-                disabled: !environment.playback.hasContent
+                disabled: false
             )
             microphoneRow
             voiceStatus
@@ -87,7 +87,14 @@ struct PrompterSectionView: View {
     }
 
     private var voiceDetail: String {
-        environment.voiceTracking.isActive ? "highlights what you have said" : "off"
+        switch environment.voiceTracking.state {
+        case .listening:
+            "highlights what you have said"
+        case .downloadingModel, .preparing, .requestingPermission:
+            "starting…"
+        case .idle, .noScript, .denied, .unavailable:
+            "off"
+        }
     }
 
     private var microphoneRow: some View {
@@ -117,28 +124,12 @@ struct PrompterSectionView: View {
         )
     }
 
-    @ViewBuilder
     private var voiceStatus: some View {
-        switch environment.voiceTracking.state {
-        case .idle, .listening:
-            EmptyView()
-        case .requestingPermission, .preparing:
-            ProgressView()
-                .controlSize(.small)
-                .accessibilityIdentifier(ControlIdentifier.voicePreparing)
-        case .denied:
-            Button("Mic access denied — open Settings") {
-                MicrophonePermission.openSystemSettings()
-            }
-            .buttonStyle(.link)
-            .font(.caption)
-            .accessibilityIdentifier(ControlIdentifier.voiceDenied)
-        case .unavailable:
-            Text("Voice tracking unavailable for this language")
-                .font(.caption)
-                .foregroundStyle(Theme.Palette.textTertiary)
-                .accessibilityIdentifier(ControlIdentifier.voiceUnavailable)
-        }
+        VoiceStatusView(
+            state: environment.voiceTracking.state,
+            onOpenLibrary: onOpenLibrary,
+            onRetry: { environment.voiceTracking.retry() }
+        )
     }
 
     private var emptyState: some View {
