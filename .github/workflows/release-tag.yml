@@ -26,25 +26,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      # The pull request checks read the version through this same action, so the two cannot
+      # drift apart. They run again here because pushes straight to main skip the pull request.
       - name: Read the declared version
         id: version
-        run: |
-          versions=$(grep -o 'MARKETING_VERSION = [^;]*;' PrompterGlass.xcodeproj/project.pbxproj \
-            | sed 's/MARKETING_VERSION = //; s/;//' | tr -d '"' | sort -u)
-          count=$(printf '%s\n' "$versions" | grep -c .)
-          if [ "$count" -ne 1 ]; then
-            echo "::error::Build configurations disagree on MARKETING_VERSION:"
-            printf '%s\n' "$versions"
-            exit 1
-          fi
-          echo "version=$versions" >> "$GITHUB_OUTPUT"
-          echo "Declared version: $versions"
-
-      - name: The changelog documents this version
-        run: |
-          version="${{ steps.version.outputs.version }}"
-          grep -q "^## \[$version\]" CHANGELOG.md \
-            || { echo "::error::CHANGELOG.md has no '## [$version]' entry"; exit 1; }
+        uses: ./.github/actions/declared-version
 
       - name: Tag it, unless that version is already tagged
         run: |

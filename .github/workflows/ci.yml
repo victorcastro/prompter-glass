@@ -1,4 +1,4 @@
-name: PR
+name: CI
 
 on:
   pull_request:
@@ -6,6 +6,9 @@ on:
 
 env:
   SWIFTLINT_IMAGE: ghcr.io/realm/swiftlint:0.63.2
+
+permissions:
+  contents: read
 
 concurrency:
   group: pr-${{ github.head_ref }}
@@ -64,3 +67,44 @@ jobs:
             echo "::error::Unresolved merge conflict markers"
             exit 1
           fi
+
+  version:
+    name: Version
+    runs-on: ubuntu-latest
+
+    # Always runs, and decides internally whether the gate applies. Filtering the job with
+    # `paths:` would leave documentation-only pull requests never reporting this check, which
+    # blocks them forever once it is a required status check.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Does this pull request change the app?
+        id: scope
+        run: |
+          changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          echo "Changed files:"
+          printf '%s\n' "$changed" | sed 's/^/  /'
+          if printf '%s\n' "$changed" | grep -qE '^(PrompterGlass/|PrompterGlass\.xcodeproj/|PrompterGlass\.entitlements$)'; then
+            echo "applies=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "applies=false" >> "$GITHUB_OUTPUT"
+            echo "No app sources touched; the version gate does not apply."
+          fi
+
+      - name: Read the declared version
+        id: declared
+        if: steps.scope.outputs.applies == 'true'
+        uses: ./.github/actions/declared-version
+
+      - name: That version must not be released already
+        if: steps.scope.outputs.applies == 'true'
+        run: |
+          version="${{ steps.declared.outputs.version }}"
+          if [ -n "$(git ls-remote --tags origin "refs/tags/v$version")" ]; then
+            echo "::error::Version $version is already released as tag v$version. Raise MARKETING_VERSION and add a '## [<new version>]' entry to CHANGELOG.md."
+            exit 1
+          fi
+          echo "Version $version is unreleased; v$version will be tagged when this merges."
