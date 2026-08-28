@@ -1,0 +1,51 @@
+name: Pages
+
+# Replaces GitHub's generated pages-build-deployment workflow, which pins an
+# actions/upload-artifact release that still targets Node.js 20. That workflow is
+# generated, not stored in the repository, so it cannot be edited — the only way off
+# it is to publish the site from a workflow we own.
+#
+# Needs the repository's Pages source set to "GitHub Actions" (build_type: workflow).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deployment finish rather than cancelling it half-published.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5

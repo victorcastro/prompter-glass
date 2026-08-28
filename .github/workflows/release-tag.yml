@@ -1,0 +1,61 @@
+name: Release tag
+
+# Tags main with the version the project declares, once per version. The tag is what the
+# changelog links point at, and what an App Store submission can be traced back to.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-tag
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    name: Tag the released version
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Read the declared version
+        id: version
+        run: |
+          versions=$(grep -o 'MARKETING_VERSION = [^;]*;' PrompterGlass.xcodeproj/project.pbxproj \
+            | sed 's/MARKETING_VERSION = //; s/;//' | tr -d '"' | sort -u)
+          count=$(printf '%s\n' "$versions" | grep -c .)
+          if [ "$count" -ne 1 ]; then
+            echo "::error::Build configurations disagree on MARKETING_VERSION:"
+            printf '%s\n' "$versions"
+            exit 1
+          fi
+          echo "version=$versions" >> "$GITHUB_OUTPUT"
+          echo "Declared version: $versions"
+
+      - name: The changelog documents this version
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          grep -q "^## \[$version\]" CHANGELOG.md \
+            || { echo "::error::CHANGELOG.md has no '## [$version]' entry"; exit 1; }
+
+      - name: Tag it, unless that version is already tagged
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          tag="v$version"
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "$tag already exists; nothing to do."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$tag" -m "PrompterGlass $version"
+          git push origin "$tag"
+          echo "Created $tag at $(git rev-parse --short HEAD)."

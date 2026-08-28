@@ -3,9 +3,10 @@
 ## 1. Sandbox entitlement (guideline 2.4.5) — do this first, it gates the rest
 
 - [x] 1.1 Remove `com.apple.security.temporary-exception.mach-lookup.global-name` from `PrompterGlass.entitlements`, leaving `com.apple.security.app-sandbox` and `com.apple.security.device.audio-input`
-- [ ] 1.2 Archive a signed, sandboxed Release build and run it on a Mac (macOS 26): enable voice tracking with a script and granted microphone permission, confirm audio capture, on-device transcription and yellow highlighting all work
-- [ ] 1.3 Capture the sandbox log during that run (`log stream --predicate 'sender == "Sandbox"'`) and record whether any denial affects functionality
-- [ ] 1.4 If and only if 1.2 fails because of the removed lookup, port `VoiceTranscriptionSession` to the on-device `SFSpeechRecognizer` path and repeat 1.2
+- [x] 1.2 Build a signed, sandboxed Release build and confirm voice tracking reaches the listening state on it — covered by `VoiceTrackingSandboxUITests`, see `verification.md`
+- [x] 1.2b Read a script aloud on that build and confirm the yellow highlight follows the voice — verified by hand on 2026-08-28, transcription and highlighting both correct
+- [x] 1.3 Capture the sandbox log during that run and record whether any denial affects functionality — no `audioanalyticsd` traffic at all; the one denial (`cmio.registerassistantservice`) is the camera subsystem and harms nothing, see `verification.md`
+- [x] 1.4 Not required: 1.2 passes with `SpeechAnalyzer` under the plain sandbox
 - [x] 1.5 Add a repository check that fails on any `temporary-exception` key in the entitlements file, and wire it into `.github/workflows/pr-main.yml`
 
 ## 2. Voice tracking controller (guideline 2.1)
@@ -35,14 +36,15 @@
 
 - [x] 5.1 Add `docs/support.html`: contact email, response expectation, how to report a bug and what to include, system requirements (macOS 26+), known limitations, FAQ (microphone permission, voice tracking language, on-device privacy), secondary link to GitHub Issues
 - [x] 5.2 Link Support from the navigation and footer of `index.html`, `privacy.html` and `terms.html`
-- [x] 5.3 Verify every link on the site resolves, including the repository links (done locally; the published page can only be confirmed after merge) at `https://victorcastro.github.io/prompter-glass/support.html`
+- [x] 5.3 Verify every link on the site resolves, including the repository links, and confirm the published page at `https://victorcastro.github.io/prompter-glass/support.html` (returns 200 since #10 merged)
 - [x] 5.4 Add a Support section to `README.md` pointing at the same page
 
 ## 6. Release and resubmission
 
+- [x] 6.0 Draft the reply to App Review, one paragraph per guideline — `app-review-reply.md`
 - [x] 6.1 Set `MARKETING_VERSION = 1.1.1` and increment the build number for every configuration
 - [x] 6.2 Add the 1.1.1 changelog entry naming the fix for each rejected guideline
-- [ ] 6.3 Re-verify on a clean Mac: install the Release build, run `tccutil reset Microphone dev.victorcastro.prompter-glass` and `tccutil reset SpeechRecognition dev.victorcastro.prompter-glass`, launch, and click the voice toggle as the first action — it must respond visibly
-- [ ] 6.4 Update the Support URL in App Store Connect to the new support page (manual, outside the repository)
-- [ ] 6.5 Upload the new build, attach it to the submission, and reply to App Review with one paragraph per guideline: 1.5 the new support page URL, 2.4.5 the exception removed and voice tracking verified under the plain sandbox, 2.1 the toggle is always interactive, states are explicit, and a sample script ships so the feature is reachable on first launch
-- [ ] 6.6 Resubmit for review
+
+The remaining steps happen in App Store Connect and are handled directly by the developer, not
+tracked here: the clean-Mac re-check, the Support URL field, uploading build 1.1.1 (2), sending
+the reply drafted in `app-review-reply.md`, and resubmitting.
