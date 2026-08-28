@@ -40,8 +40,9 @@ precisely what the removed entitlement was suspected of gating. `ENABLE_TESTABIL
 needed only so the unit-test target still compiles in the Release configuration; it does not
 change the entitlements or the sandbox.
 
-What this does **not** cover: that live speech produces the yellow highlight. That needs a person
-reading aloud, and stays a manual check.
+What this does **not** cover is that live speech produces the yellow highlight. That was checked
+by hand on the same Release build on 2026-08-28: reading the script aloud transcribed correctly
+and the highlight followed the voice.
 
 ## Task 1.3 — sandbox log during that run
 
@@ -71,8 +72,7 @@ CONTAINS "deny" OR subsystem == "com.apple.speech"'`.
 Not required. Task 1.2 shows the current `SpeechAnalyzer` implementation works without the
 exception.
 
-## Still manual
+## Handled outside this change
 
-- Reading a script aloud on the Release build and confirming the yellow highlight (rest of 1.2).
-- Task 6.3, the clean-Mac first-click check.
-- Tasks 6.4, 6.5 and 6.6 in App Store Connect.
+The clean-Mac re-check and the App Store Connect steps — Support URL, uploading build 1.1.1 (2),
+sending the reply in `app-review-reply.md`, resubmitting — are done directly by the developer.
