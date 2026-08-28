@@ -2,6 +2,7 @@
 
 A native macOS teleprompter with a transparent floating window that stays on top of any app — meant for reading your script right next to the webcam during recordings and video calls.
 
+[![CI](https://github.com/victorcastro/prompter-glass/actions/workflows/ci.yml/badge.svg)](https://github.com/victorcastro/prompter-glass/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Platform: macOS](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)
 
