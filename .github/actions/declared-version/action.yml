@@ -1,0 +1,42 @@
+name: Declared version
+description: >
+  Reads the version the Xcode project declares, and optionally checks that the changelog
+  documents it. Shared by the pull request checks and the release tagging on main so both
+  read the project the same way.
+
+inputs:
+  require-changelog:
+    description: Fail when CHANGELOG.md has no entry for the declared version.
+    required: false
+    default: 'true'
+
+outputs:
+  version:
+    description: The version declared by every build configuration, e.g. 1.1.1
+    value: ${{ steps.read.outputs.version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Read MARKETING_VERSION
+      id: read
+      shell: bash
+      run: |
+        versions=$(grep -o 'MARKETING_VERSION = [^;]*;' PrompterGlass.xcodeproj/project.pbxproj \
+          | sed 's/MARKETING_VERSION = //; s/;//' | tr -d '"' | sort -u)
+        count=$(printf '%s\n' "$versions" | grep -c .)
+        if [ "$count" -ne 1 ]; then
+          echo "::error::Build configurations disagree on MARKETING_VERSION:"
+          printf '%s\n' "$versions"
+          exit 1
+        fi
+        echo "version=$versions" >> "$GITHUB_OUTPUT"
+        echo "Declared version: $versions"
+
+    - name: The changelog documents this version
+      if: inputs.require-changelog == 'true'
+      shell: bash
+      run: |
+        version="${{ steps.read.outputs.version }}"
+        grep -q "^## \[$version\]" CHANGELOG.md \
+          || { echo "::error::CHANGELOG.md has no '## [$version]' entry"; exit 1; }
