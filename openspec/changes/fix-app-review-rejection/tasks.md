@@ -42,7 +42,7 @@
 
 - [x] 6.1 Set `MARKETING_VERSION = 1.1.1` and increment the build number for every configuration
 - [x] 6.2 Add the 1.1.1 changelog entry naming the fix for each rejected guideline
-- [ ] 6.3 Re-verify on a clean Mac: install the Release build, run `tccutil reset Microphone dev.victorcastro.PrompterGlass` and `tccutil reset SpeechRecognition dev.victorcastro.PrompterGlass`, launch, and click the voice toggle as the first action — it must respond visibly
+- [ ] 6.3 Re-verify on a clean Mac: install the Release build, run `tccutil reset Microphone dev.victorcastro.prompter-glass` and `tccutil reset SpeechRecognition dev.victorcastro.prompter-glass`, launch, and click the voice toggle as the first action — it must respond visibly
 - [ ] 6.4 Update the Support URL in App Store Connect to the new support page (manual, outside the repository)
 - [ ] 6.5 Upload the new build, attach it to the submission, and reply to App Review with one paragraph per guideline: 1.5 the new support page URL, 2.4.5 the exception removed and voice tracking verified under the plain sandbox, 2.1 the toggle is always interactive, states are explicit, and a sample script ships so the feature is reachable on first launch
 - [ ] 6.6 Resubmit for review

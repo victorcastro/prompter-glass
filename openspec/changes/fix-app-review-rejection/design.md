@@ -58,7 +58,7 @@ idle ──enable──▶ noScript                (no active script with text)
 
 ## Verification
 
-The 2.1 fix is verified the way the reviewer met it: a Release build, installed on a Mac where the app has never run, with `tccutil reset Microphone dev.victorcastro.PrompterGlass` and `tccutil reset SpeechRecognition dev.victorcastro.PrompterGlass` executed first, and the speech model for the system language removed if present. Clicking the voice toggle as the very first action after launch must produce a visible, explanatory response.
+The 2.1 fix is verified the way the reviewer met it: a Release build, installed on a Mac where the app has never run, with `tccutil reset Microphone dev.victorcastro.prompter-glass` and `tccutil reset SpeechRecognition dev.victorcastro.prompter-glass` executed first, and the speech model for the system language removed if present. Clicking the voice toggle as the very first action after launch must produce a visible, explanatory response.
 
 ## Risks
 
