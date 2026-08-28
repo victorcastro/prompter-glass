@@ -15,7 +15,11 @@ struct PrompterGlassApp: App {
         let shouldReset = arguments.contains(PrompterGlassApp.uiTestResetArgument)
         modelContainer = ModelContainerFactory.make(inMemory: isUITesting)
         let defaults = PrompterGlassApp.makeDefaults(isUITesting: isUITesting, reset: shouldReset)
-        let environment = AppEnvironment(preferences: OverlayPreferencesStore(defaults: defaults))
+        let preferences = OverlayPreferencesStore(defaults: defaults)
+        if !isUITesting {
+            SampleScriptSeeder.seedIfNeeded(context: modelContainer.mainContext, preferences: preferences)
+        }
+        let environment = AppEnvironment(preferences: preferences)
         let container = modelContainer
         environment.onSessionRecorded = { draft in
             container.mainContext.insert(PromptSession(draft: draft))

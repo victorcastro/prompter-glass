@@ -8,9 +8,16 @@ final class VoiceTranscriptionSession {
         let isFinal: Bool
     }
 
-    enum SessionError: Error {
+    enum Phase: Equatable {
+        case installingModel(language: String)
+        case starting
+    }
+
+    enum SessionError: Error, Equatable {
         case localeNotSupported
+        case modelUnavailable
         case audioFormatUnavailable
+        case audioEngineFailed
     }
 
     private let audioEngine = AVAudioEngine()
@@ -31,11 +38,14 @@ final class VoiceTranscriptionSession {
             ?? sameLanguage.first
     }
 
-    func start(deviceUID: String?, onUpdate: @escaping @MainActor (Update) -> Void) async throws {
+    func start(
+        deviceUID: String?,
+        onPhase: @escaping @MainActor (Phase) -> Void,
+        onUpdate: @escaping @MainActor (Update) -> Void
+    ) async throws {
         guard let locale = await VoiceTranscriptionSession.resolveSupportedLocale() else {
             throw SessionError.localeNotSupported
         }
-        applyInputDevice(uid: deviceUID)
 
         let transcriber = SpeechTranscriber(
             locale: locale,
@@ -43,9 +53,10 @@ final class VoiceTranscriptionSession {
             reportingOptions: [.volatileResults],
             attributeOptions: []
         )
-        if let request = try await AssetInventory.assetInstallationRequest(supporting: [transcriber]) {
-            try await request.downloadAndInstall()
-        }
+        try await installModelIfNeeded(for: transcriber, locale: locale, onPhase: onPhase)
+
+        onPhase(.starting)
+        applyInputDevice(uid: deviceUID)
 
         let analyzer = SpeechAnalyzer(modules: [transcriber])
         self.analyzer = analyzer
@@ -66,10 +77,37 @@ final class VoiceTranscriptionSession {
             } catch {}
         }
 
-        try installTap(feeding: builder, format: analyzerFormat)
-        try await analyzer.start(inputSequence: inputSequence)
-        audioEngine.prepare()
-        try audioEngine.start()
+        do {
+            try installTap(feeding: builder, format: analyzerFormat)
+            try await analyzer.start(inputSequence: inputSequence)
+            audioEngine.prepare()
+            try audioEngine.start()
+        } catch {
+            throw SessionError.audioEngineFailed
+        }
+    }
+
+    /// The speech model is installed by the system on demand; the download is reported as its own
+    /// phase because it can take long enough that an unlabeled spinner reads as a frozen control.
+    private func installModelIfNeeded(
+        for transcriber: SpeechTranscriber,
+        locale: Locale,
+        onPhase: @escaping @MainActor (Phase) -> Void
+    ) async throws {
+        do {
+            guard let request = try await AssetInventory.assetInstallationRequest(
+                supporting: [transcriber]
+            ) else { return }
+            onPhase(.installingModel(language: VoiceTranscriptionSession.languageName(for: locale)))
+            try await request.downloadAndInstall()
+        } catch {
+            throw SessionError.modelUnavailable
+        }
+    }
+
+    private static func languageName(for locale: Locale) -> String {
+        let identifier = locale.identifier(.bcp47)
+        return Locale.current.localizedString(forIdentifier: identifier) ?? identifier
     }
 
     func stop() {

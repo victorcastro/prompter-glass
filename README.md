@@ -45,8 +45,8 @@ Out of scope for now: export, cloud sync, iOS/iPadOS, remote control, camera cap
 ## Build and run
 
 ```bash
-git clone https://github.com/VictorCastroDev/PrompterGlass.git
-cd PrompterGlass
+git clone https://github.com/victorcastro/prompter-glass.git
+cd prompter-glass
 open PrompterGlass.xcodeproj
 ```
 
@@ -55,6 +55,10 @@ In Xcode: select the `PrompterGlass` scheme and hit Run (`⌘R`).
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md).
+
+## Support
+
+Questions, bug reports and feature requests: the [support page](https://victorcastro.github.io/prompter-glass/support.html) ([source](docs/support.html)), or [victorcastro.c20@gmail.com](mailto:victorcastro.c20@gmail.com). No GitHub account needed.
 
 ## Privacy
 

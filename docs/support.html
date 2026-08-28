@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Support — PrompterGlass</title>
+  <meta name="description" content="PrompterGlass support: how to ask a question, report a bug, and answers to the most common questions.">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site">
+    <h1>Support</h1>
+    <p class="tagline">PrompterGlass</p>
+  </header>
+
+  <nav class="site">
+    <a href="index.html">Home</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms</a>
+    <a href="https://github.com/victorcastro/prompter-glass">GitHub</a>
+  </nav>
+
+  <main>
+    <div class="card">
+      <strong>Need help?</strong> Write to <a href="mailto:victorcastro.c20@gmail.com">victorcastro.c20@gmail.com</a>. No account of any kind is needed, and questions in English or Spanish are equally welcome. Expect a reply within two business days.
+    </div>
+
+    <h2>System requirements</h2>
+    <ul>
+      <li>macOS 26 or later, on Apple silicon or Intel.</li>
+      <li>A microphone — built-in or external — only if you want to use voice tracking.</li>
+      <li>No account, no subscription, and no internet connection for normal use.</li>
+    </ul>
+
+    <h2>Reporting a bug</h2>
+    <p>Email the address above, or open an issue on <a href="https://github.com/victorcastro/prompter-glass/issues">GitHub</a> if you already have an account there. Either way, the report is much easier to act on when it includes:</p>
+    <ul>
+      <li>What you did, step by step, and what you expected to happen instead.</li>
+      <li>Your macOS version (Apple menu &rsaquo; About This Mac) and your Mac model.</li>
+      <li>The app version, shown in PrompterGlass &rsaquo; About PrompterGlass.</li>
+      <li>A screenshot or short screen recording, if the problem is visual.</li>
+    </ul>
+
+    <h2>Common questions</h2>
+
+    <h3 id="voice-tracking">Voice tracking will not start</h3>
+    <p>The app says why underneath the Voice tracking switch:</p>
+    <ul>
+      <li><strong>&ldquo;Pick a script first&rdquo;</strong> — voice tracking follows the script you are reading, so it needs one selected in the Library with some text in it.</li>
+      <li><strong>&ldquo;Mic access denied&rdquo;</strong> — open System Settings &rsaquo; Privacy &amp; Security &rsaquo; Microphone and switch PrompterGlass on. The link in the app takes you straight there.</li>
+      <li><strong>&ldquo;Downloading the … speech model&rdquo;</strong> — the first activation in a given language asks macOS to install its on-device speech model. This needs an internet connection once, and only once.</li>
+      <li><strong>&ldquo;Voice tracking unavailable for this language&rdquo;</strong> — macOS has no on-device speech model for your system language yet. Fixed-speed scrolling works normally in every language.</li>
+    </ul>
+
+    <h3>Does my voice leave my Mac?</h3>
+    <p>No. Speech is transcribed by Apple&rsquo;s on-device recognition, in memory, and is never stored or transmitted. The full detail is in the <a href="privacy.html">privacy policy</a>.</p>
+
+    <h3>The overlay is hidden while I share my screen</h3>
+    <p>Sharing your entire screen shares the overlay along with it. Share a single window instead, and the overlay stays on your side of the call. Some fullscreen games and certain Stage Manager arrangements can also cover the overlay.</p>
+
+    <h3>The overlay is in the way</h3>
+    <p>Drag it anywhere by its body — it reopens where you left it. Turn on Click-through to let the mouse pass straight through it while you work underneath.</p>
+
+    <h3>Where are my scripts stored?</h3>
+    <p>In the app&rsquo;s own sandboxed container on your Mac. Deleting a script removes it; uninstalling the app removes everything it ever saved.</p>
+
+    <h2>Requesting a feature</h2>
+    <p>Same address, same tracker. PrompterGlass is open source under the MIT License, so you can also read the code and send a pull request.</p>
+  </main>
+
+  <footer class="site">
+    Open source under the <a href="https://github.com/victorcastro/prompter-glass/blob/main/LICENSE">MIT License</a> · © 2026 Victor Castro
+  </footer>
+</body>
+</html>

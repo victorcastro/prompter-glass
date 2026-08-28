@@ -5,6 +5,22 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-08-28
+
+Fixes for the three issues App Review raised on the first Mac App Store submission of 1.1.0.
+
+### Fixed
+
+- **The Voice tracking switch is never inert (guideline 2.1).** It used to be disabled whenever no script with text was selected, which is exactly what a freshly installed app looks like, and nothing on screen said why. The switch now always responds and the app states what is missing: pick a script, grant microphone access, or wait for the speech model.
+- **Failures say what actually failed.** Every problem starting voice tracking used to report itself as "unavailable for this language". A missing speech model, an audio input failure and an unsupported language are now told apart, each with its own message and a Retry button.
+- **Starting voice tracking cannot hang.** Installing the speech model is shown as a labeled download instead of a bare spinner, and activation is bounded in time — if it does not finish, the app says so instead of spinning forever.
+
+### Changed
+
+- **The sandbox no longer requests a temporary exception (guideline 2.4.5).** `com.apple.security.temporary-exception.mach-lookup.global-name` is gone; voice tracking runs under the plain App Sandbox with microphone access alone. A CI check now fails if any temporary exception comes back.
+- **A sample script ships with a fresh install.** An empty library left playback, the overlay and voice tracking with nothing to act on. The sample is editable, and deleting it is permanent.
+- **A real support page (guideline 1.5).** [victorcastro.github.io/prompter-glass/support.html](https://victorcastro.github.io/prompter-glass/support.html) answers the common questions and gives an email address that needs no GitHub account. It replaces the issue tracker as the App Store support URL.
+
 ## [1.1.0] - 2026-08-11
 
 ### Added
@@ -51,5 +67,6 @@ First usable version. Build it from source in Xcode; there is no signed binary o
 - One overlay on one display; no multi-monitor mirroring.
 - Plain text only — no rich text, Markdown or imported documents.
 
-[1.1.0]: https://github.com/VictorCastroDev/PrompterGlass/releases/tag/v1.1.0
-[1.0.0]: https://github.com/VictorCastroDev/PrompterGlass/releases/tag/v1.0.0
+[1.1.1]: https://github.com/victorcastro/prompter-glass/releases/tag/v1.1.1
+[1.1.0]: https://github.com/victorcastro/prompter-glass/releases/tag/v1.1.0
+[1.0.0]: https://github.com/victorcastro/prompter-glass/releases/tag/v1.0.0

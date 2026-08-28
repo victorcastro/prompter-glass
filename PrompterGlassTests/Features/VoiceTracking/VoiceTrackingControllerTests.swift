@@ -8,6 +8,10 @@ struct VoiceTrackingControllerTests {
     @MainActor
     private final class FakeSession: VoiceTranscribing {
         var startError: Error?
+        /// Reported before the session finishes starting, the way a real model install would be.
+        var installingModelLanguage: String?
+        /// Never returns until cancelled, standing in for an install that does not complete.
+        var hangsOnStart = false
         private(set) var stopped = false
         private(set) var startCount = 0
         private(set) var lastDeviceUID: String?
@@ -15,11 +19,19 @@ struct VoiceTrackingControllerTests {
 
         func start(
             deviceUID: String?,
+            onPhase: @escaping @MainActor (VoiceTranscriptionSession.Phase) -> Void,
             onUpdate: @escaping @MainActor (VoiceTranscriptionSession.Update) -> Void
         ) async throws {
+            if let installingModelLanguage {
+                onPhase(.installingModel(language: installingModelLanguage))
+            }
+            if hangsOnStart {
+                try await Task.sleep(for: .seconds(30))
+            }
             if let startError {
                 throw startError
             }
+            onPhase(.starting)
             startCount += 1
             lastDeviceUID = deviceUID
             self.onUpdate = onUpdate
@@ -44,7 +56,8 @@ struct VoiceTrackingControllerTests {
         permission: MicrophonePermission.Status = .granted,
         requestOutcome: Bool = true,
         startError: Error? = nil,
-        script: String = "hello world how are you"
+        script: String = "hello world how are you",
+        activationTimeout: Duration = .seconds(30)
     ) -> Harness {
         let suite = UUID().uuidString
         let defaults = UserDefaults(suiteName: suite) ?? .standard
@@ -62,7 +75,8 @@ struct VoiceTrackingControllerTests {
                 status: { permission },
                 request: { requestOutcome }
             ),
-            makeSession: { session }
+            makeSession: { session },
+            activationTimeout: activationTimeout
         )
         controller.setScript(script)
         return Harness(controller: controller, playback: playback, session: session)
@@ -108,8 +122,88 @@ struct VoiceTrackingControllerTests {
         harness.controller.setEnabled(true)
         await harness.controller.waitUntilSettled()
 
-        #expect(harness.controller.state == .unavailable)
+        #expect(harness.controller.state == .unavailable(.unknown))
         #expect(harness.session.stopped)
+    }
+
+    @Test("Enabling without a script reports that a script is needed and never opens the microphone")
+    func withoutScriptReportsNoScript() async {
+        let harness = makeHarness(script: "   \n  ")
+
+        harness.controller.setEnabled(true)
+        await harness.controller.waitUntilSettled()
+
+        #expect(harness.controller.state == .noScript)
+        #expect(harness.session.startCount == 0)
+        #expect(harness.controller.isActive == false)
+    }
+
+    @Test("Picking a script clears the no-script state")
+    func scriptClearsNoScriptState() async {
+        let harness = makeHarness(script: "")
+        harness.controller.setEnabled(true)
+        await harness.controller.waitUntilSettled()
+        #expect(harness.controller.state == .noScript)
+
+        harness.controller.setScript("now there is something to read")
+
+        #expect(harness.controller.state == .idle)
+    }
+
+    @Test("A model installation is reported as its own state before listening starts")
+    func modelInstallationIsReported() async {
+        let harness = makeHarness()
+        harness.session.installingModelLanguage = "English"
+        harness.session.hangsOnStart = true
+
+        harness.controller.setEnabled(true)
+        #expect(await waitFor { harness.controller.state == .downloadingModel(language: "English") })
+        #expect(harness.controller.isActive)
+    }
+
+    @Test("An activation that never completes ends in a stated failure")
+    func stalledActivationTimesOut() async {
+        let harness = makeHarness(activationTimeout: .milliseconds(30))
+        harness.session.hangsOnStart = true
+
+        harness.controller.setEnabled(true)
+        #expect(await waitFor { harness.controller.state == .unavailable(.modelUnavailable) })
+        #expect(harness.controller.isActive == false)
+        #expect(harness.playback.engine.isVoiceDriven == false)
+    }
+
+    @Test("Each session error keeps its own reason instead of blaming the language")
+    func errorsKeepTheirReason() async {
+        let cases: [(VoiceTranscriptionSession.SessionError, VoiceTrackingController.Reason)] = [
+            (.localeNotSupported, .languageNotSupported),
+            (.modelUnavailable, .modelUnavailable),
+            (.audioFormatUnavailable, .audioInputFailed),
+            (.audioEngineFailed, .audioInputFailed)
+        ]
+        for (error, reason) in cases {
+            let harness = makeHarness(startError: error)
+
+            harness.controller.setEnabled(true)
+            await harness.controller.waitUntilSettled()
+
+            #expect(harness.controller.state == .unavailable(reason))
+            #expect(harness.controller.canRetry)
+        }
+    }
+
+    @Test("Retry reaches the listening state once the cause is gone")
+    func retryStartsListening() async {
+        struct Boom: Error {}
+        let harness = makeHarness(startError: Boom())
+        harness.controller.setEnabled(true)
+        await harness.controller.waitUntilSettled()
+        #expect(harness.controller.canRetry)
+
+        harness.session.startError = nil
+        harness.controller.retry()
+        await harness.controller.waitUntilSettled()
+
+        #expect(harness.controller.state == .listening)
     }
 
     @Test("Recognized words extend the highlight and move the scroll target")
@@ -265,5 +359,17 @@ struct VoiceTrackingControllerTests {
 
         #expect(harness.controller.highlightedUTF16Length == 0)
         #expect(harness.controller.state == .idle)
+    }
+
+    private func waitFor(
+        timeout: Duration = .seconds(2),
+        _ predicate: @escaping @MainActor () -> Bool
+    ) async -> Bool {
+        let deadline = ContinuousClock.now.advanced(by: timeout)
+        while ContinuousClock.now < deadline {
+            if predicate() { return true }
+            try? await Task.sleep(for: .milliseconds(5))
+        }
+        return predicate()
     }
 }
